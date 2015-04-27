@@ -83,24 +83,24 @@
 			
         function onDeviceReady_audio()
         {
-            PGLowLatencyAudio.preloadFX('do', 'sounds/do.mp3');
-            PGLowLatencyAudio.preloadFX('dosu', 'sounds/dosu.mp3');
-            PGLowLatencyAudio.preloadFX('re', 'sounds/re.mp3');
+            LowLatencyAudio.preloadFX('do', 'sounds/do.mp3');
+            LowLatencyAudio.preloadFX('dosu', 'sounds/dosu.mp3');
+            LowLatencyAudio.preloadFX('re', 'sounds/re.mp3');
         }		
         
         function do_ui() {//Apenas nome da função mudada
             document.getElementById("do").className = "touched";
-            PGLowLatencyAudio.play('do');
+            LowLatencyAudio.play('do');
         }
         
         function dosu() {
             document.getElementById("dosu").className = "touched";
-            PGLowLatencyAudio.play('dosu');
+            LowLatencyAudio.play('dosu');
         }
 		
 		function re() {
 			document.getElementById("re").className = "touched";
-            PGLowLatencyAudio.play('re');
+            LowLatencyAudio.play('re');
         } 
         
         function touchend( event ) {
@@ -161,7 +161,7 @@
 <div data-role="page" id="page3" data-title="INMUI - COMPOR" data-theme="a">
 	<div data-role="header">
 		
-        <a href="#painel_lateral" data-transition="pop" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-grid"> menu </a>
+        <a href="#painel_lateral2" data-transition="pop" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-grid"> menu </a>
     
     </div>
     
@@ -227,11 +227,11 @@
     </div><!-- footer -->
 
 <!-- /painel_lateral -->  
-<div data-role="panel" id="painel_lateral">
+<div data-role="panel" id="painel_lateral2">
 		<p><a href="#" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-star">show</a></p>
 		<p><a href="#page3" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-gear">compor</a></p>
 		<p><a href="#" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-info">info</a></p>
-        <p><a href="#" id="exit_app" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-power">
+        <p><a href="#" id="exit_app2" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-power">
         sair
         </a></p>
    	<br><br>

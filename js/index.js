@@ -47,7 +47,7 @@ function onBackPress(e) {
 	//if($.mobile.activePage.is("#page_init")){
 		e.preventDefault();
 		
-		sair = confirm("SAIR?");
+		var sair = confirm("SAIR?");
 		if (sair){
 			navigator.app.exitApp();
 		}
@@ -57,9 +57,6 @@ function onBackPress(e) {
     //}
 }
 function onLoad_back() {
-    document.addEventListener("deviceready", onDeviceReady_back, false);
-}
-function onDeviceReady_back() {
 	document.getElementById("exit_app").addEventListener("click", onBackPress, false);
 	document.getElementById("exit_app2").addEventListener("click", onBackPress, false);
 }
@@ -272,6 +269,25 @@ var app = {
 			//html5audio.stop();
 			return false;
 		}
+		
+		//Funções para páginas
+		$(document).on("pagecontainershow", function () { 
+			var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
+		
+			var activePageId = activePage[0].id;
+			switch (activePageId) {
+				case 'page_init':
+				   
+					break;
+				case 'page2':
+				 
+					break;
+				case 'page3':
+				 
+					break;
+				default:
+			}
+		});
 		
 		app.receivedEvent('deviceready'); 
 		
