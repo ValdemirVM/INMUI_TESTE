@@ -251,7 +251,9 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() { //Insira aqui todas as funções p inicializar
-			
+    
+	app.receivedEvent('deviceready');
+    	
         initPushwoosh(); //Função de push
 		
 		loadScript("phonegap-websocket.js",function(){ //websockets
@@ -269,45 +271,31 @@ var app = {
 			//html5audio.stop();
 			return false;
 		}
-		
-		//Funções para páginas
-		$(document).on("pagecontainershow", function () { 
-			var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
-		
-			var activePageId = activePage[0].id;
-			switch (activePageId) {
-				case 'page_init':
-				   
-					break;
-				case 'page2':
-				 
-					break;
-				case 'page3':
-				 
-					break;
-				default:
-			}
-		});
-		
-		app.receivedEvent('deviceready'); 
-		
-    },
+
+	},
 	onOffline: function() { 
 		alert("sem conexão");
 		navigator.app.exitApp();
+	},
+	 // Update DOM on a Received Event
+	receivedEvent: function(id) {
+	
+		if( window.plugins && window.plugins.NativeAudio ) {
+	
+				window.plugins.NativeAudio.preloadSimple('sounds/do.mp3', 'sounds/do.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
+				window.plugins.NativeAudio.preloadSimple('sounds/dosu.mp3', 'sounds/dosu.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
+				window.plugins.NativeAudio.preloadSimple('sounds/re.mp3', 'sounds/re.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
+			   
+		}
+
+    
+	},	
+	play: function(bts_sounds) {
+        document.getElementById(bts_sounds).classList.add('touched');
+        window.plugins.NativeAudio.play('sounds/' + bts_sounds + '.mp3', function(msg){console.info(msg), document.getElementById(bts_sounds).classList.remove('touched');}, function(msg){ console.error( 'Error: ' + msg ); });
     },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
-
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
-        console.log('Received Event: ' + id);
-    }
+    
+	touchEnd: function(event) {
+		event.target.className = 'bts_sounds';
+	}
 };
-
-//INICIALIZA FUNÇÕES
-app.initialize(); 
