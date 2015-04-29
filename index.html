@@ -9,9 +9,9 @@
 <link rel="stylesheet" href="jquery-mobile/jquery.mobile.structure-1.4.5.min.css" />
 <script src="jquery-mobile/jquery-1.11.0.min.js"></script> 
 <script type="text/javascript">
-    //$(document).bind("mobileinit", function() {
-        //$.mobile.buttonMarkup.hoverDelay = 0; //Tap rapido
-    //});    
+  $(document).bind("mobileinit", function() {
+        $.mobile.buttonMarkup.hoverDelay = 0; //Tap rapido
+   });    
 </script>
 
 <style type="text/css">
@@ -56,6 +56,7 @@
 <script src="jquery-mobile/jquery.mobile-1.4.5.min.js"></script> 
 <script src="cordova.js" type="text/javascript"></script>
 <script type="text/javascript" charset="utf-8" src="nativeaudio.js"></script>
+<script type="text/javascript" charset="utf-8" src="html5audio.js"></script>
 <script type="text/javascript" src="http://dfdbz2tdq3k01.cloudfront.net/js/2.1.0/ortc.js"></script>
 <script type="text/javascript" src="PushNotification.js"></script>
 <script type="text/javascript" src="js/PushwooshAndroid.js"></script>
@@ -92,17 +93,39 @@ app.initialize();
 	
 	<div data-role="header">
     
-		<a href="#painel_lateral" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-grid"> menu </a>   
+		<a href="#" id="bt_menu" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-grid"> menu </a>   
     
 	</div><!-- header -->
     
     <!-- content -->
 	<div data-role="content">
     <br><br>
+    <h2>Example HTML5 Audio Streamer app</h2>
+  	  <div id="playcontrols">
+		  <a href="#" id="playbutton" onClick="html5audio.play();return false;"><img src="images/playbutton.png" /></a>
+		  <a href="#" id="activityindicator" onClick="html5audio.stop();return false;"><img src="images/ajax-loader8.gif" /></a>
+		  <a href="#" id="stopbutton" onClick="html5audio.stop();return false;"><img src="images/stopbutton.png" /></a>
+	  </div>
+	  <div id="textpositiondiv"><span id="textposition"></span></div>
+	  <script type="text/javascript">
+		  playButton = document.getElementById('playbutton');
+		  stopButton = document.getElementById('stopbutton');
+		  activityIndicator = document.getElementById('activityindicator');
+		  textPosition = document.getElementById('textposition');
+	  </script>
   
-      <div class="bts_sounds" id="do" ontouchstart="app.play('do');" ontouchend="app.touchEnd(event);">DO</div>
+	  <div class="bts_sounds" id="do" ontouchstart="app.play('do');" ontouchend="app.touchEnd(event);">DO</div>
       <div class="bts_sounds" id="dosu" ontouchstart="app.play('dosu');" ontouchend="app.touchEnd(event);">DO#</div>
       <div class="bts_sounds" id="re" ontouchstart="app.play('re');" ontouchend="app.touchEnd(event);">RE</div>
+      <div class="bts_sounds" id="resu" ontouchstart="app.play('resu');" ontouchend="app.touchEnd(event);">RE#</div>
+      <div class="bts_sounds" id="mi" ontouchstart="app.play('mi');" ontouchend="app.touchEnd(event);">MI</div>
+      <div class="bts_sounds" id="fa" ontouchstart="app.play('fa');" ontouchend="app.touchEnd(event);">FA</div>
+      <div class="bts_sounds" id="fasu" ontouchstart="app.play('fasu');" ontouchend="app.touchEnd(event);">FA#</div>
+      <div class="bts_sounds" id="sol" ontouchstart="app.play('sol');" ontouchend="app.touchEnd(event);">SOL</div>
+      <div class="bts_sounds" id="solsu" ontouchstart="app.play('solsu');" ontouchend="app.touchEnd(event);">SOL#</div>
+      <div class="bts_sounds" id="la" ontouchstart="app.play('la');" ontouchend="app.touchEnd(event);">LA</div>
+      <div class="bts_sounds" id="lasu" ontouchstart="app.play('lasu');" ontouchend="app.touchEnd(event);">LA#</div>
+      <div class="bts_sounds" id="si" ontouchstart="app.play('si');" ontouchend="app.touchEnd(event);">SI</div>
      
  
 <div id="div_logo">
@@ -136,7 +159,7 @@ app.initialize();
 <div data-role="page" id="page3" data-title="INMUI - COMPOR" data-theme="a">
 	<div data-role="header">
 		
-        <a href="#painel_lateral2" data-transition="pop" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-grid"> menu </a>
+        <a href="#" id="bt_menu2" data-transition="pop" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-grid"> menu </a>
     
     </div>
     

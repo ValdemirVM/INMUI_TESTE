@@ -233,6 +233,24 @@ function initPushwoosh() {
 	}
 }
 
+//Links
+function bts_app(){
+	//$(document).on("pageinit", "#p1", function () {
+    $(document).on('tap', '#bt_menu', function(){
+		$.mobile.pageContainer.pagecontainer("change", "#painel_lateral", {
+            stuff: this.id,
+            transition: "flip"
+		});
+	});
+	//});
+	$(document).on('tap', '#bt_menu2', function(){
+		$.mobile.pageContainer.pagecontainer("change", "#painel_lateral2", {
+            stuff: this.id,
+            transition: "flip"
+		});
+	});	
+}
+
 var app = {
     // Application Constructor
     initialize: function() {
@@ -265,12 +283,14 @@ var app = {
 		   
 		//Carrega audio do show
 		if($.mobile.activePage[0].id== "page_init"){
-			//html5audio.play();
+			html5audio.play();
 			return false;
 		}else{
-			//html5audio.stop();
+			html5audio.stop();
 			return false;
 		}
+		
+		bts_app();//Links
 
 	},
 	onOffline: function() { 
