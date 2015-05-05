@@ -78,7 +78,7 @@
     
 	<access origin="*" />
 	<access origin="*.pushwoosh.com"/> <!-- allow pushwoosh service -->
-	<access origin="myradiostream.com"/> <!-- streaming -->
+	<access origin="*.myradiostream.com"/> <!-- streaming -->
 	<access origin="devgeeks" subdomains="true" />
  
 </widget>

@@ -9,54 +9,21 @@
 <link rel="stylesheet" href="jquery-mobile/jquery.mobile.structure-1.4.5.min.css" />
 <script src="jquery-mobile/jquery-1.11.0.min.js"></script> 
 <script type="text/javascript">
-  $(document).bind("mobileinit", function() {
-        $.mobile.buttonMarkup.hoverDelay = 0; //Tap rapido
-   });    
+$(document).bind("mobileinit", function() {
+	$.mobile.buttonMarkup.hoverDelay = 0; //Tap rapido
+	$.mobile.loader.prototype.options.text = "Aguarde..."; //Msg de loading
+	$.mobile.loader.prototype.options.textVisible = true;
+	$.mobile.loader.prototype.options.theme = "a";
+	$.mobile.loader.prototype.options.textonly = false;
+	$.mobile.loader.prototype.options.html = "";
+});  
+    
 </script>
-
-<style type="text/css">
-.bts_sounds{
-	float:left; 
-	width: 40%;
-	height: 32%;
-	padding:1% 0% 1% 0%;
-	margin:2% 2% 2% 2%;
-	border-radius: 20px;
-	border-left:8px solid rgba(78,74,73,0.95);
-	border-top:8px solid rgba(78,74,73,0.95);
-	border-right:7px solid rgba(61,59,58,0.95);
-	border-bottom:7px solid rgba(61,59,58,0.95);
-	background-color:rgba(73,71,70,0.95);  
-	font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
-	font-size: 130%;
-	text-align:center;
-	color:#FFA600;
-	font-weight:bold;
-}
-.touched {
-	float:left; 
-	width: 40%;
-	height: 32%;
-	padding:1% 0% 1% 0%;
-	margin:2% 2% 2% 2%;
-	border-radius: 20px;
-	background-color:rgba(175,97,1,0.95); 
-	border-left: 8px solid rgba(160,89,0,0.95); 
-	border-top: 8px solid rgba(160,89,0,0.95);
-	border-right: 7px solid rgba(138,76,0,0.95);
-	border-bottom: 7px solid rgba(138,76,0,0.95);
-	font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
-	font-size: 130%;
-	text-align:center;
-	color:#FFA600;
-	font-weight:bold;
-}
-</style>
-
 <script src="jquery-mobile/jquery.mobile-1.4.5.min.js"></script> 
 <script src="cordova.js" type="text/javascript"></script>
 <script type="text/javascript" charset="utf-8" src="nativeaudio.js"></script>
 <script type="text/javascript" charset="utf-8" src="html5audio.js"></script>
+<script type="text/javascript" charset="utf-8" src="record.js"></script>
 <script type="text/javascript" src="http://dfdbz2tdq3k01.cloudfront.net/js/2.1.0/ortc.js"></script>
 <script type="text/javascript" src="PushNotification.js"></script>
 <script type="text/javascript" src="js/PushwooshAndroid.js"></script>
@@ -78,145 +45,282 @@
 	background-size: 35%; 
 	z-index: -1; 
 }
+#div_play{ 
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	width: 100% !important; 
+	height: 100% !important; 
+	background: url(images/equalizer.gif) no-repeat center center fixed !important; 
+	-webkit-background-size: 35%; 
+	-moz-background-size: 35%; 
+	-o-background-size: 35%; 
+	background-size: 35%; 
+	z-index: -1; 
+}
 .ui-page{ 
 	background:none;
+	padding:0;
 }
+.ui-header {
+    background-color:transparent !important; /*#690003 / transparent*/ 
+	border:hidden; 
+}
+.bts_sounds{
+	float:left; 
+	height: 32%;
+	padding:5px 0px 5px 0px;
+	margin:3px 3px 3px 3px;
+	border-radius: 10px;
+	border-left:8px solid rgba(78,74,73,0.95);
+	border-top:8px solid rgba(78,74,73,0.95);
+	border-right:7px solid rgba(61,59,58,0.95);
+	border-bottom:7px solid rgba(61,59,58,0.95);
+	background-color:rgba(73,71,70,0.95);  
+	font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
+	font-size: 130%;
+	text-align:center;
+	color:#FFA600;
+	font-weight:bold;
+}
+.touched {
+	float:left; 
+	height: 32%;
+	padding:5px 0px 5px 0px;
+	margin:3px 3px 3px 3px;
+	border-radius: 10px;
+	background-color:rgba(175,97,1,0.95); 
+	border-left: 8px solid rgba(160,89,0,0.95); 
+	border-top: 8px solid rgba(160,89,0,0.95);
+	border-right: 7px solid rgba(138,76,0,0.95);
+	border-bottom: 7px solid rgba(138,76,0,0.95);
+	font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
+	font-size: 130%;
+	text-align:center;
+	color:#FFA600;
+	font-weight:bold;
+}
+#playcontrols {
+	text-align: center;
+	margin-left: 0px 7px 0px 25px;
+	padding:0;
+	width:35px;
+	height:35px;
+}
+#playcontrols img{
+	width:30px;
+}
+#playcontrols #activityindicator, #playcontrols #stopbutton {
+	display: none;
+}
+#textpositiondiv {
+	margin: 0;
+	padding:0;
+}
+/*AUDIO RECORD*/
+#slider{
+	display:none;
+}
+
+div.ui-slider{
+	margin:0;
+	width:100%;
+}
+
+#recording{
+	font-weight: bold;
+	color:#f00;
+}
+
+.ui-icon-audio-play {
+	background-image: url("images/18/play.png");
+}
+
+.ui-icon-audio-pause {
+	background-image: url("images/18/pause.png");
+}
+
+.ui-icon-audio-stop {
+	background-image: url("images/18/stop.png");
+}
+
+.ui-icon-audio-rewind {
+	background-image: url("images/18/rewind.png");
+}
+
+.ui-icon-audio-record {
+	background-image: url("images/18/record.png");
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+	.ui-icon-audio-play {
+		background-image: url("images/36/play.png");
+		background-size: 18px 18px;
+	}
+	
+	.ui-icon-audio-pause {
+		background-image: url("images/36/pause.png");
+		background-size: 18px 18px;
+	}
+	
+	.ui-icon-audio-stop {
+		background-image: url("images/36/stop.png");
+		background-size: 18px 18px;
+	}
+	
+	.ui-icon-audio-rewind {
+		background-image: url("images/36/rewind.png");
+		background-size: 18px 18px;
+	}
+	
+	.ui-icon-audio-record {
+		background-image: url("images/36/record.png");
+		background-size: 18px 18px;
+	}
+}
+
 </style>
+<script id="panel-init">
+	$(function() {
+		$( "body>[data-role='panel']" ).panel();
+	});
+</script>
+
 <script type="text/javascript">
-//INICIALIZA FUNÇÕES
-app.initialize(); 
+$( document ).ready(function() {});
 </script>
 
 </head> 
-<body> 
+<body onselectstart="return false"> 
 <div data-role="page" id="page_init" data-title="INMUI" data-theme="a">
 	
 	<div data-role="header">
     
-		<a href="#" id="bt_menu" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-grid"> menu </a>   
+		<a href="#" class="bt_to_menu" data-role="button" data-icon="bullets" data-iconpos="left"> menu </a>
+        <h2></h2> 
+		<a href="#" class="bt_to_vivo" data-role="button" data-icon="cloud" data-iconpos="right"> ao vivo </a> <br> 
     
 	</div><!-- header -->
     
     <!-- content -->
 	<div data-role="content">
-    <br><br>
-    <h2>Example HTML5 Audio Streamer app</h2>
-  	  <div id="playcontrols">
-		  <a href="#" id="playbutton" onClick="html5audio.play();return false;"><img src="images/playbutton.png" /></a>
-		  <a href="#" id="activityindicator" onClick="html5audio.stop();return false;"><img src="images/ajax-loader8.gif" /></a>
-		  <a href="#" id="stopbutton" onClick="html5audio.stop();return false;"><img src="images/stopbutton.png" /></a>
-	  </div>
-	  <div id="textpositiondiv"><span id="textposition"></span></div>
-	  <script type="text/javascript">
-		  playButton = document.getElementById('playbutton');
-		  stopButton = document.getElementById('stopbutton');
-		  activityIndicator = document.getElementById('activityindicator');
-		  textPosition = document.getElementById('textposition');
-	  </script>
-  
-	  <div class="bts_sounds" id="do" ontouchstart="app.play('do');" ontouchend="app.touchEnd(event);">DO</div>
-      <div class="bts_sounds" id="dosu" ontouchstart="app.play('dosu');" ontouchend="app.touchEnd(event);">DO#</div>
-      <div class="bts_sounds" id="re" ontouchstart="app.play('re');" ontouchend="app.touchEnd(event);">RE</div>
-      <div class="bts_sounds" id="resu" ontouchstart="app.play('resu');" ontouchend="app.touchEnd(event);">RE#</div>
-      <div class="bts_sounds" id="mi" ontouchstart="app.play('mi');" ontouchend="app.touchEnd(event);">MI</div>
-      <div class="bts_sounds" id="fa" ontouchstart="app.play('fa');" ontouchend="app.touchEnd(event);">FA</div>
-      <div class="bts_sounds" id="fasu" ontouchstart="app.play('fasu');" ontouchend="app.touchEnd(event);">FA#</div>
-      <div class="bts_sounds" id="sol" ontouchstart="app.play('sol');" ontouchend="app.touchEnd(event);">SOL</div>
-      <div class="bts_sounds" id="solsu" ontouchstart="app.play('solsu');" ontouchend="app.touchEnd(event);">SOL#</div>
-      <div class="bts_sounds" id="la" ontouchstart="app.play('la');" ontouchend="app.touchEnd(event);">LA</div>
-      <div class="bts_sounds" id="lasu" ontouchstart="app.play('lasu');" ontouchend="app.touchEnd(event);">LA#</div>
-      <div class="bts_sounds" id="si" ontouchstart="app.play('si');" ontouchend="app.touchEnd(event);">SI</div>
-     
- 
-<div id="div_logo">
-</div>
     
+		<div id="div_logo"></div>
+   
+    </div><!-- content -->
+    
+    <!-- footer -->
+	<div data-role="footer" data-position="fixed">
+	</div><!-- footer -->
+
+	<!-- msg_inicial -->
+	<div data-role="popup" id="popup_msg" data-overlay-theme="a" data-theme="a" data-dismissible="true">
+		<div role="main" class="ui-content">
+            <p id="msg_init_inmui"></p> 
+            <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">START INMUI</a>
+		</div>
+    </div><!-- msg_inicial -->
+    
+</div><!-- Pagina 1 -->
+
+<!-- Pagina SHOW AO VIVO -->
+<div data-role="page" id="show" data-title="SHOW" data-theme="b">
+	
+	<div data-role="header">
+    
+		<a href="#" class="bt_to_menu" data-role="button" data-icon="bullets" data-iconpos="left"> menu </a>
+        <h1>
+		<div id="playcontrols">
+		  <a href="#" id="playbutton" onClick="html5audio.play();return false;"><img src="images/playbutton.png" /></a>
+		  <a href="#" id="activityindicator" onClick="html5audio.stop();return false;"><img src="images/activityindicator.gif" /></a>
+		  <a href="#" id="stopbutton" onClick="html5audio.stop();return false;"><img src="images/stopbutton.png" /></a>
+		</div>
+        <!-- <small id="textposition">stopped</small> -->
+        </h1>
+        <a href="#" class="bt_to_online" data-role="button" data-icon="user" data-iconpos="right"> online </a>  
+	</div><!-- header -->
+     
+    <!-- content -->
+	<div data-role="content">
+      
+		<div class="bts_sounds" id="do" ontouchstart="app.play('do');" ontouchend="app.touchEnd(event);">DO</div>
+		<div class="bts_sounds" id="dosu" ontouchstart="app.play('dosu');" ontouchend="app.touchEnd(event);">DO#</div>
+		<div class="bts_sounds" id="re" ontouchstart="app.play('re');" ontouchend="app.touchEnd(event);">RE</div>
+		<div class="bts_sounds" id="resu" ontouchstart="app.play('resu');" ontouchend="app.touchEnd(event);">RE#</div>
+		<div class="bts_sounds" id="mi" ontouchstart="app.play('mi');" ontouchend="app.touchEnd(event);">MI</div>
+		<div class="bts_sounds" id="fa" ontouchstart="app.play('fa');" ontouchend="app.touchEnd(event);">FA</div>
+		<div class="bts_sounds" id="fasu" ontouchstart="app.play('fasu');" ontouchend="app.touchEnd(event);">FA#</div>
+		<div class="bts_sounds" id="sol" ontouchstart="app.play('sol');" ontouchend="app.touchEnd(event);">SOL</div>
+		<div class="bts_sounds" id="solsu" ontouchstart="app.play('solsu');" ontouchend="app.touchEnd(event);">SOL#</div>
+		<div class="bts_sounds" id="la" ontouchstart="app.play('la');" ontouchend="app.touchEnd(event);">LA</div>
+		<div class="bts_sounds" id="lasu" ontouchstart="app.play('lasu');" ontouchend="app.touchEnd(event);">LA#</div>
+		<div class="bts_sounds" id="si" ontouchstart="app.play('si');" ontouchend="app.touchEnd(event);">SI</div>  
+    
+            <br>
+			<div id="audioPosition">
+                <input type="range" name="slider" id="slider" value="0" min="0" max="100" data-highlight="true" disabled />
+            </div>
+            <div data-role="controlgroup" data-type="horizontal">
+                <input type="button" id="play" data-role="button" data-icon="audio-play" data-iconpos="notext" value="Play" />
+                <input type="button" id="pause" data-role="button" data-icon="audio-pause" data-iconpos="notext" value="Pause" disabled />
+                <input type="button" id="stop" data-role="button" data-icon="audio-stop" data-iconpos="notext" value="Stop" />
+                <input type="button" id="rewind" data-role="button" data-icon="audio-rewind" data-iconpos="notext" value="Rewind" />
+                <input type="button" id="record" data-role="button" data-icon="audio-record" data-iconpos="notext" value="Record">
+            </div>
+            <div id="recording"></div>
+   
+    <div id="div_play"></div>
     </div><!-- content -->
     
     <!-- footer -->
 	<div data-role="footer" data-position="fixed">
 	</div><!-- footer -->
     
-<!-- /painel_lateral -->  
-<div data-role="panel" id="painel_lateral">
-		<p><a href="#" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-star">show</a></p>
-		<p><a href="#page3" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-gear">compor</a></p>
-		<p><a href="#" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-info">info</a></p>
-        <p><a href="#" id="exit_app" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-power">
-        sair
-        </a></p>
-   	<br><br>
-    <div style="text-align:center;">	
-    <img src="icon.png" alt="" style="width:70%;"/>
-    </div> 
-    </div><!-- menu lateral -->
-</div><!-- painel_lateral -->
-
-</div><!-- Pagina 1 -->
+</div><!-- Pagina SHOW AO VIVO -->
 
 
-<!-- Pagina 2 -->
-<div data-role="page" id="page3" data-title="INMUI - COMPOR" data-theme="a">
+<!-- Pagina TREINE -->
+<div data-role="page" id="treine" data-title="TREINE" data-theme="a">
 	<div data-role="header">
 		
-        <a href="#" id="bt_menu2" data-transition="pop" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-grid"> menu </a>
+        <a href="#" class="bt_to_menu" data-role="button" data-icon="bullets" data-iconpos="left"> menu </a>
+        <h2></h2> 
+		<a href="#" id="bt_mp3_treine" data-role="button" data-icon="audio" data-iconpos="right">PLAY</a> <br> 
+    
+    </div>
+    
+	<div data-role="content" data-="true">
+		<div class="bts_sounds" id="do" ontouchstart="app.play('do');" ontouchend="app.touchEnd(event);">DO</div>
+		<div class="bts_sounds" id="dosu" ontouchstart="app.play('dosu');" ontouchend="app.touchEnd(event);">DO#</div>
+		<div class="bts_sounds" id="re" ontouchstart="app.play('re');" ontouchend="app.touchEnd(event);">RE</div>
+		<div class="bts_sounds" id="resu" ontouchstart="app.play('resu');" ontouchend="app.touchEnd(event);">RE#</div>
+		<div class="bts_sounds" id="mi" ontouchstart="app.play('mi');" ontouchend="app.touchEnd(event);">MI</div>
+		<div class="bts_sounds" id="fa" ontouchstart="app.play('fa');" ontouchend="app.touchEnd(event);">FA</div>
+		<div class="bts_sounds" id="fasu" ontouchstart="app.play('fasu');" ontouchend="app.touchEnd(event);">FA#</div>
+		<div class="bts_sounds" id="sol" ontouchstart="app.play('sol');" ontouchend="app.touchEnd(event);">SOL</div>
+		<div class="bts_sounds" id="solsu" ontouchstart="app.play('solsu');" ontouchend="app.touchEnd(event);">SOL#</div>
+		<div class="bts_sounds" id="la" ontouchstart="app.play('la');" ontouchend="app.touchEnd(event);">LA</div>
+		<div class="bts_sounds" id="lasu" ontouchstart="app.play('lasu');" ontouchend="app.touchEnd(event);">LA#</div>
+		<div class="bts_sounds" id="si" ontouchstart="app.play('si');" ontouchend="app.touchEnd(event);">SI</div>  
+	</div><!-- content -->
+ 
+    <div data-role="footer">
+    </div><!-- footer -->
+
+</div><!-- Pagina TREINE -->
+
+<!-- Pagina CHATTEXT -->
+<div data-role="page" id="chat_text" data-title="CHAT TEXTUAL" data-theme="a">
+	<div data-role="header">
+		
+        <a href="#" class="bt_to_menu" data-role="button" data-icon="bullets" data-iconpos="left"> menu </a>
+        <h2></h2> 
+		<a href="#" class="bt_to_online" data-role="button" data-icon="user" data-iconpos="right"> online </a> 
     
     </div>
     
 	<div data-role="content" data-="true">
     <br><br>
-		<form>
-        
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            Título do Show :<br>
-            <input type="text" id="titulo" name="titulo" value="">
-            
-		</form>
         
         
 	</div><!-- content -->
@@ -224,22 +328,62 @@ app.initialize();
     <div data-role="footer">
     </div><!-- footer -->
 
-<!-- /painel_lateral -->  
-<div data-role="panel" id="painel_lateral2">
-		<p><a href="#" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-star">show</a></p>
-		<p><a href="#page3" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-gear">compor</a></p>
-		<p><a href="#" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-info">info</a></p>
-        <p><a href="#" id="exit_app2" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-power">
+</div><!-- Pagina CHATTEXT -->
+
+<!-- Pagina INFO -->
+<div data-role="page" id="info" data-title="INFORMAÇÕES" data-theme="a">
+	<div data-role="header">
+		
+        <a href="#" class="bt_to_menu" data-role="button" data-icon="bullets" data-iconpos="left"> menu </a>
+        <h2></h2> 
+		    
+    </div>
+    
+	<div data-role="content" data-="true">
+    <br><br>
+        
+        
+	</div><!-- content -->
+ 
+    <div data-role="footer">
+    </div><!-- footer -->
+
+</div><!-- Pagina INFO -->
+
+<!-- painel_lateral esquerdo -->  
+<div data-role="panel" id="painel_lateral" data-position="left" data-display="push" data-theme="a">
+		<p><a href="#" id="bt_to_home" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-home">início</a></p>
+        <p><a href="#" id="bt_to_treine" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-star">treine</a></p>
+        <p><a href="#" id="bt_to_chat_text" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-user">chat textual</a></p>
+		<p><a href="#" id="bt_to_info" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-info">info</a></p>
+        <p><a href="#" id="exit_app" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-power">
         sair
         </a></p>
    	<br><br>
     <div style="text-align:center;">	
-    <img src="icon.png" alt="" style="width:70%;"/>
+    <img src="images/logo.png" alt="" style="width:70%;"/>
     </div> 
-    </div><!-- menu lateral -->
-</div><!-- painel_lateral -->
+</div><!-- painel_lateral esquerdo --> 
 
-</div><!-- Pagina 2 -->
+<!-- painel_lateral direito -->  
+<div data-role="panel" id="painel_lateral_direito" data-position="right" data-display="push" data-theme="a">
+    <div style="text-align:center;">	
+    <img src="images/logo.png" alt="" style="width:70%;"/>
+    </div> 
+    <p style="font-size:10px;">
+    <strong>Usuários online: <span id="user_on_vivo"></span></strong><br><br>
+    <strong>Streaming: <small id="textposition">stopped</small></strong><br><br>
+    <strong>Total de participantes no INMUI: <span id="total_streaming_vivo"></span></strong><br><br>
+
+    </p>
+</div><!-- painel_lateral direito --> 
+
+<script type="text/javascript">
+		playButton = document.getElementById('playbutton');
+		stopButton = document.getElementById('stopbutton');
+		activityIndicator = document.getElementById('activityindicator');
+		textPosition = document.getElementById('textposition');
+</script>  
 
 </body>
 </html>

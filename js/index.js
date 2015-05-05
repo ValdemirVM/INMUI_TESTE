@@ -16,14 +16,88 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- 
-//$.mobile.activePage[0].id //id da pagina atual
-//pagina atual (fromPage)
+ //pagina atual (fromPage)
 //nova pagina(toPage)
 // $( '#aboutPage' ).on( 'pageinit',function(event){  //na inicialização de pagina
-//  alert( 'This page was just enhanced by jQuery Mobile!' );
-//});
-//
+
+function carregar_bts(){//Função para carregar botões
+		
+	function bt_to_pages(id_bt, id_page){	//FUNÇÃO PARA BOTÕES
+		$( id_bt ).on( "tap", function( event ) {  
+			$.mobile.pageContainer.pagecontainer('change', id_page, {
+				transition: 'slide', //Transição
+				changeHash: true, //entrada de histórico do navegador para usar o bt voltar (hash #)
+				reverse: false, //Transição em sentido inverso
+				reload: false, //refresh usado apenas quando é uma url
+				type: 'get', //Tipo de solicitação http, apenas quando é url (padrão é get)- changeHash: false
+				role: 'page', //Tipo de de data-role  
+				showLoadMsg: true //Mensagem de loading
+			});
+		});	
+	}
+	
+	$( ".bt_to_menu" ).on( "tap", function( event ) { //Bt da home para Menu lateral
+		$( "#painel_lateral" ).panel( "open");
+	});
+	
+	$( ".bt_to_online" ).on( "tap", function( event ) { //Bt do show para useruarios online
+		$( "#painel_lateral_direito" ).panel( "open");
+	});
+	
+	$( ".bt_to_vivo" ).on( "tap", function( event ) {  //Bt da home show ao vivo
+		$.mobile.pageContainer.pagecontainer('change', '#show', {
+				transition: 'flip', //Transição
+				changeHash: true, //entrada de histórico do navegador para usar o bt voltar (hash #)
+				reverse: false, //Transição em sentido inverso
+				reload: false, //refresh usado apenas quando é uma url
+				type: 'get', //Tipo de solicitação http, apenas quando é url (padrão é get)- changeHash: false
+				role: 'page', //Tipo de de data-role  
+				showLoadMsg: true //Mensagem de loading
+		});
+	});
+			
+	$( "#bt_to_home" ).on( "tap", function( event ) {  //Bt do menu lateral para home
+		if($.mobile.activePage[0].id== "page_init"){
+			$( "#painel_lateral" ).panel( "close" );
+		}else{
+			$.mobile.pageContainer.pagecontainer('change', '#page_init', { role: 'page', transition: 'slide' });
+		}
+	});
+	
+	$( "#bt_to_treine" ).on( "tap", function( event ) {  //Bt do menu lateral para TREINE
+		if($.mobile.activePage[0].id== "treine"){
+			$( "#painel_lateral" ).panel( "close" );
+		}else{
+			$.mobile.pageContainer.pagecontainer('change', '#treine', { role: 'page', transition: 'slide' });
+		}
+	});
+	$( "#bt_to_chat_text" ).on( "tap", function( event ) {  //Bt do menu lateral para CHATTEXT
+		if($.mobile.activePage[0].id== "chat_text"){
+			$( "#painel_lateral" ).panel( "close" );
+		}else{
+			$.mobile.pageContainer.pagecontainer('change', '#chat_text', { role: 'page', transition: 'slide' });
+		}
+	});
+	$( "#bt_to_info" ).on( "tap", function( event ) {  //Bt do menu lateral para CHATTEXT
+		if($.mobile.activePage[0].id== "info"){
+			$( "#painel_lateral" ).panel( "close" );
+		}else{
+			$.mobile.pageContainer.pagecontainer('change', '#info', { role: 'page', transition: 'slide' });
+		}
+	});
+	$( "#exit_app" ).on( "tap", function( event ) {  //Bt do menu lateral para SAIR
+		
+			navigator.notification.confirm(
+            "SAIR?",
+            function (button) {
+              if (button==2) {
+                navigator.app.exitApp();
+              }
+            }, "Confirmar", ["Cancel","OK"] );
+
+	});//Bt do menu lateral para SAIR
+	
+}//Fim de função carregar_bts
 
 //Check o tipo de conexão
 function checkConnection() {
@@ -40,25 +114,6 @@ function checkConnection() {
             states[Connection.NONE]     = 'No network connection';
 
             //alert('Connection type: ' + states[networkState]);		
-}
-
-//BOTÃO SAIR OU VOLTAR
-function onBackPress(e) {
-	//if($.mobile.activePage.is("#page_init")){
-		e.preventDefault();
-		
-		var sair = confirm("SAIR?");
-		if (sair){
-			navigator.app.exitApp();
-		}
-		
-   // }else{
-        //navigator.app.backHistory();
-    //}
-}
-function onLoad_back() {
-	document.getElementById("exit_app").addEventListener("click", onBackPress, false);
-	document.getElementById("exit_app2").addEventListener("click", onBackPress, false);
 }
 
 //Função Carregamento
@@ -89,15 +144,15 @@ function playAudioId(id) { //Executar audio com botões chamando os ids dos audi
     var url = getPhoneGapPath() + audioElement.getAttribute('src');
     var my_media = new Media(url
             // success callback
-             //,function () { console.log("playAudioId():Audio Success"); }
+            ,function () { alert("playAudioId():Audio Success"); }
             // error callback
-             //,function (err) { console.log("playAudioId():Audio Error: " + err); }
+            ,function (err) { alert("playAudioId():Audio Error: " + err); }
     );
            // Play audio
     my_media.play();
 }
 
-function playAudio(name_sound) { //Executar audio
+function playAudio_src(name_sound) { //Executar audio
 	var som = new Media(getPhoneGapPath() + name_sound);
 	//var som = new Media(getPhoneGapPath() + name_sound, this.onSuccess, this.mediaError);
 	som.play();
@@ -233,24 +288,6 @@ function initPushwoosh() {
 	}
 }
 
-//Links
-function bts_app(){
-	//$(document).on("pageinit", "#p1", function () {
-    $(document).on('tap', '#bt_menu', function(){
-		$.mobile.pageContainer.pagecontainer("change", "#painel_lateral", {
-            stuff: this.id,
-            transition: "flip"
-		});
-	});
-	//});
-	$(document).on('tap', '#bt_menu2', function(){
-		$.mobile.pageContainer.pagecontainer("change", "#painel_lateral2", {
-            stuff: this.id,
-            transition: "flip"
-		});
-	});	
-}
-
 var app = {
     // Application Constructor
     initialize: function() {
@@ -269,9 +306,37 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() { //Insira aqui todas as funções p inicializar
-    
-	app.receivedEvent('deviceready');
-    	
+	
+		carregar_bts(); //Carregar botões
+		
+		//Largura dos botões de som
+		$(document).on("pagecontainershow", function () { 
+			var width_bt_som = $( window ).width() / 3 - 32;
+			$(".bts_sounds").css({"width": width_bt_som + "px"});
+				
+			$( window ).on( "orientationchange", function( event ) {
+				var width_bt_som = $( window ).width() / 3 - 32;
+				$(".bts_sounds").css({"width": width_bt_som + "px"});
+			});
+		});
+		
+		if($.mobile.activePage[0].id== "show"){//Executar streaming
+			html5audio.play();
+		}else{
+				html5audio.stop();
+		}
+	
+		//Mensagens na inicialização
+		var msg_init_inmui = ['A terra pede socorro, ajude-a.', 'Salve sua casa, salve o planeta.', 'Ame a sua vida, cuide de seu planeta.', 'A poluição nos mata, nos entristece, nos envelhece.', 'Seja feliz, mantenha limpa as ruas e os rios.', 'Sorria para a esperança de um planeta saudável.', 'Tenha coragem e denuncie os crimes ambientais.', 'Os animais são seres vivos e merecem respeito.', 'Menos carros; mais ar para a vida.', 'Respeite a você mesmo, respeite a natureza.', 'Lembre-se, estamos todos em um só planeta.', 'Todos querem o perfume das flores, mas poucos sujam suas mãos para cultivá-las. <br>(Augusto Cury)', 'Ambiente limpo não é o que mais se limpa e sim o que menos se suja. <br>(Chico Xavier) ', 'A natureza pode suprir todas as necessidades do homem, menos a sua ganância. <br>(Mahatma Gandhi) ', 'A sabedoria da natureza é tal que não produz nada de supérfluo ou inútil. <br>(Nicolau Copérnico) ', 'É triste pensar que a natureza fala e que o gênero humano não a ouve. <br>(Victor Hugo) ', 'A natureza é o único livro que oferece um conteúdo valioso em todas as suas folhas. <br>(Johann Wolfgang von Goethe) ', 'Se soubesse que o mundo se acaba amanhã, eu ainda hoje plantaria uma árvore. <br>(Martin Luther King Jr.) ', 'Digo que minha música vem da natureza, agora mais do que nunca. Amo as árvores, as pedras, os passarinhos. <br>(Tom Jobim) ', 'Nunca o homem inventará nada mais simples nem mais belo do que uma manifestação da natureza. <br>(Leonardo da Vinci) ', 'A terra é insultada e oferece suas flores como resposta. <br>(Rabindranath Tagore) ', 'O animal selvagem e cruel não é aquele que está atrás das grades. É o que está na frente delas. <br>(Axel Munthe) ', 'Só se pode vencer a natureza obedecendo-lhe. <br>(Francis Bacon) ', 'Eu adoraria pintar do jeito que o pássaro canta. <br>(Claude Monet) ', 'Podes cortar todas as flores mas não podes impedir a Primavera de aparecer. <br>(Pablo Neruda)', 'O coração do homem, quando longe da natureza, endurece. <br>(Povo Indígena Lakota) ', 'Às vezes ouço passar o vento; e só de ouvir o vento passar, vale a pena ter nascido. <br>(Fernando Pessoa) ', 'A Floresta Amazônica não pode, ela própria, entrar na Justiça contra os desmatadores. Nós é que temos de fazer isso. <br>(Marina Silva) ', 'O nível da poluição ambiental no planeta é igualada a burrice dos homens. <br>(Edy Gahr) ', 'A responsabilidade social e a preservação ambiental significa um compromisso com a vida. <br>(João Bosco da Silva) ', 'É tão humano escrever sobre conscientização ambiental. Díficil é sustentar essa idéia quando uma pessoa joga o lixo na rua. <br>(Dani Leão) ', 'Quem ama preserva. Preservar o meio ambiente é preservar a VIDA. <br>(Andrea Taiyoo) ', 'Recicle o lixo,feche a torneira quando estiver escovando os dentes... somente você e eu poderemos salvar o mundo. <br>(Andrea Taiyoo) ', 'Preservar o Meio Ambiente é uma lição de todos, futuras gerações agradecem esta idéia. <br>(Carlos Alberto da Silveira) ', 'Preservai a atmosfera do planeta: - chuva não se fabrica!  <br>(AJCMusskoff)'];
+		var show_msg_init = msg_init_inmui[Math.floor(Math.random() * msg_init_inmui.length)];
+		document.getElementById("msg_init_inmui").innerHTML = "<h3>" + show_msg_init +"</h3>";
+		
+		if($.mobile.activePage[0].id== "page_init"){ //Mensagem inicial de texto
+			$('#popup_msg').popup('open', {
+				transition: 'pop'
+			});
+		}
+		
         initPushwoosh(); //Função de push
 		
 		loadScript("phonegap-websocket.js",function(){ //websockets
@@ -279,43 +344,52 @@ var app = {
 			resize_text_websockets (); //Para redimencionar textarea que recebe os textos		
 		});
 		
-		onLoad_back(); //BT SAIR
-		   
-		//Carrega audio do show
-		if($.mobile.activePage[0].id== "page_init"){
-			html5audio.play();
-			return false;
-		}else{
-			html5audio.stop();
-			return false;
+		if( window.plugins && window.plugins.NativeAudio ) {
+	
+				window.plugins.NativeAudio.preloadSimple('sounds/do.mp3', 'sounds/do.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
+				window.plugins.NativeAudio.preloadSimple('sounds/dosu.mp3', 'sounds/dosu.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
+				window.plugins.NativeAudio.preloadSimple('sounds/re.mp3', 'sounds/re.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });		
+				window.plugins.NativeAudio.preloadSimple('sounds/resu.mp3', 'sounds/resu.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
+				window.plugins.NativeAudio.preloadSimple('sounds/mi.mp3', 'sounds/mi.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
+				window.plugins.NativeAudio.preloadSimple('sounds/fa.mp3', 'sounds/fa.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
+				window.plugins.NativeAudio.preloadSimple('sounds/fasu.mp3', 'sounds/fasu.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
+				window.plugins.NativeAudio.preloadSimple('sounds/sol.mp3', 'sounds/sol.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
+				window.plugins.NativeAudio.preloadSimple('sounds/solsu.mp3', 'sounds/solsu.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
+				window.plugins.NativeAudio.preloadSimple('sounds/la.mp3', 'sounds/la.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
+				window.plugins.NativeAudio.preloadSimple('sounds/lasu.mp3', 'sounds/lasu.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
+				window.plugins.NativeAudio.preloadSimple('sounds/si.mp3', 'sounds/si.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
+			
 		}
 		
-		bts_app();//Links
+
+		app.receivedEvent('deviceready');
 
 	},
 	onOffline: function() { 
 		alert("sem conexão");
 		navigator.app.exitApp();
 	},
-	 // Update DOM on a Received Event
+	// Update DOM on a Received Event
 	receivedEvent: function(id) {
 	
-		if( window.plugins && window.plugins.NativeAudio ) {
-	
-				window.plugins.NativeAudio.preloadSimple('sounds/do.mp3', 'sounds/do.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
-				window.plugins.NativeAudio.preloadSimple('sounds/dosu.mp3', 'sounds/dosu.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
-				window.plugins.NativeAudio.preloadSimple('sounds/re.mp3', 'sounds/re.mp3', function(msg){console.info(msg)}, function(msg){ console.error( 'Error: ' + msg ); });
-			   
-		}
+		var parentElement = document.getElementById(id);
+        var listeningElement = parentElement.querySelector('.listening');
+        var receivedElement = parentElement.querySelector('.received');
 
+        listeningElement.setAttribute('style', 'display:none;');
+        receivedElement.setAttribute('style', 'display:block;');
+
+        console.log('Received Event: ' + id);
     
 	},	
 	play: function(bts_sounds) {
         document.getElementById(bts_sounds).classList.add('touched');
         window.plugins.NativeAudio.play('sounds/' + bts_sounds + '.mp3', function(msg){console.info(msg), document.getElementById(bts_sounds).classList.remove('touched');}, function(msg){ console.error( 'Error: ' + msg ); });
-    },
-    
+	},
 	touchEnd: function(event) {
 		event.target.className = 'bts_sounds';
 	}
 };
+
+//INICIALIZA FUNÇÕES
+app.initialize(); 
