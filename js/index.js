@@ -309,6 +309,10 @@ var app = {
 	
 		carregar_bts(); //Carregar botões
 		
+		html5audio.play(); //Play streaming
+		
+        onDeviceReady_PlayAudio(); //PLAYER AUDIO
+		
 		//Largura dos botões de som
 		$(document).on("pagecontainershow", function () { 
 			var width_bt_som = $( window ).width() / 3 - 32;
@@ -319,22 +323,28 @@ var app = {
 				$(".bts_sounds").css({"width": width_bt_som + "px"});
 			});
 		});
-		
-		if($.mobile.activePage[0].id== "show"){//Executar streaming
-			html5audio.play();
-		}else{
-				html5audio.stop();
-		}
 	
 		//Mensagens na inicialização
 		var msg_init_inmui = ['A terra pede socorro, ajude-a.', 'Salve sua casa, salve o planeta.', 'Ame a sua vida, cuide de seu planeta.', 'A poluição nos mata, nos entristece, nos envelhece.', 'Seja feliz, mantenha limpa as ruas e os rios.', 'Sorria para a esperança de um planeta saudável.', 'Tenha coragem e denuncie os crimes ambientais.', 'Os animais são seres vivos e merecem respeito.', 'Menos carros; mais ar para a vida.', 'Respeite a você mesmo, respeite a natureza.', 'Lembre-se, estamos todos em um só planeta.', 'Todos querem o perfume das flores, mas poucos sujam suas mãos para cultivá-las. <br>(Augusto Cury)', 'Ambiente limpo não é o que mais se limpa e sim o que menos se suja. <br>(Chico Xavier) ', 'A natureza pode suprir todas as necessidades do homem, menos a sua ganância. <br>(Mahatma Gandhi) ', 'A sabedoria da natureza é tal que não produz nada de supérfluo ou inútil. <br>(Nicolau Copérnico) ', 'É triste pensar que a natureza fala e que o gênero humano não a ouve. <br>(Victor Hugo) ', 'A natureza é o único livro que oferece um conteúdo valioso em todas as suas folhas. <br>(Johann Wolfgang von Goethe) ', 'Se soubesse que o mundo se acaba amanhã, eu ainda hoje plantaria uma árvore. <br>(Martin Luther King Jr.) ', 'Digo que minha música vem da natureza, agora mais do que nunca. Amo as árvores, as pedras, os passarinhos. <br>(Tom Jobim) ', 'Nunca o homem inventará nada mais simples nem mais belo do que uma manifestação da natureza. <br>(Leonardo da Vinci) ', 'A terra é insultada e oferece suas flores como resposta. <br>(Rabindranath Tagore) ', 'O animal selvagem e cruel não é aquele que está atrás das grades. É o que está na frente delas. <br>(Axel Munthe) ', 'Só se pode vencer a natureza obedecendo-lhe. <br>(Francis Bacon) ', 'Eu adoraria pintar do jeito que o pássaro canta. <br>(Claude Monet) ', 'Podes cortar todas as flores mas não podes impedir a Primavera de aparecer. <br>(Pablo Neruda)', 'O coração do homem, quando longe da natureza, endurece. <br>(Povo Indígena Lakota) ', 'Às vezes ouço passar o vento; e só de ouvir o vento passar, vale a pena ter nascido. <br>(Fernando Pessoa) ', 'A Floresta Amazônica não pode, ela própria, entrar na Justiça contra os desmatadores. Nós é que temos de fazer isso. <br>(Marina Silva) ', 'O nível da poluição ambiental no planeta é igualada a burrice dos homens. <br>(Edy Gahr) ', 'A responsabilidade social e a preservação ambiental significa um compromisso com a vida. <br>(João Bosco da Silva) ', 'É tão humano escrever sobre conscientização ambiental. Díficil é sustentar essa idéia quando uma pessoa joga o lixo na rua. <br>(Dani Leão) ', 'Quem ama preserva. Preservar o meio ambiente é preservar a VIDA. <br>(Andrea Taiyoo) ', 'Recicle o lixo,feche a torneira quando estiver escovando os dentes... somente você e eu poderemos salvar o mundo. <br>(Andrea Taiyoo) ', 'Preservar o Meio Ambiente é uma lição de todos, futuras gerações agradecem esta idéia. <br>(Carlos Alberto da Silveira) ', 'Preservai a atmosfera do planeta: - chuva não se fabrica!  <br>(AJCMusskoff)'];
 		var show_msg_init = msg_init_inmui[Math.floor(Math.random() * msg_init_inmui.length)];
 		document.getElementById("msg_init_inmui").innerHTML = "<h3>" + show_msg_init +"</h3>";
-		
+				
+		$(document).on("pagecontainershow", function (e, ui) {//Ações em determinada pagina
+			  var prev_page = ui.prevPage[0].id;
+			  if (prev_page = "page_init") {
+				setTimeout(function () {
+					$('#popup_msg').popup('open', {
+						transition: 'pop'
+					});
+				}, 1000);
+			  }
+		});
 		if($.mobile.activePage[0].id== "page_init"){ //Mensagem inicial de texto
-			$('#popup_msg').popup('open', {
-				transition: 'pop'
-			});
+			setTimeout(function () {
+				$('#popup_msg').popup('open', {
+					transition: 'pop'
+				});
+			}, 1000);
 		}
 		
         initPushwoosh(); //Função de push

@@ -1,157 +1,133 @@
-// handling document ready and phonegap deviceready
-window.addEventListener('load', function () {
-    document.addEventListener('deviceready', onDeviceReady_record, false);
-}, false);
 
-// Phonegap is loaded and can be used
-function onDeviceReady_record(){
-	var play_btn = $('#play');
-	var pause_btn = $('#pause');
-	var stop_btn = $('#stop');
-	var rewind_btn = $('#rewind');
-	var record_btn = $('#record');
-	
-	play_btn.click(function(){
-		playAudio("/android_asset/audio/sample.mp3");
-		
-		$(this).button('disable');
-		pause_btn.button('enable');
-	});
-	
-	pause_btn.click(function(){
-		pauseAudio();
-		
-		$(this).button('disable');
-		play_btn.button('enable');
-	});
-	
-	stop_btn.click(function(){
-		stopAudio();
-		// reset slider
-		$('#slider').val(0);
-		$('#slider').slider('refresh');
-		
-	    pause_btn.button('disable');
-		play_btn.button('enable');
-	});
-	
-	rewind_btn.click(function(){
-		stopAudio();
-		playAudio("/android_asset/audio/sample.mp3");
-		
-	    play_btn.button('enable');
-		pause_btn.button('disable');
-	});
-	
-	record_btn.click(function(){
-		stopAudio();
-		$(this).button('disable');
-		play_btn.button('enable');
-		pause_btn.button('disable');
-		
-		var recsec = 10;
-		recordAudio('record.mp3');
-		var rectxt = setInterval(function(){
-			var recording = $('#recording');
-			if(recsec == 0) {
-				clearInterval(rectxt);
-				recording.text('Play recording');
-				record_btn.button('enable');
-				playAudio('record.mp3');
-			} else {
-				recording.text('Stop recording in ' + recsec + ' seconds' );
-				--recsec;
-			}
-		},1000);
-	});
-}
 
-/* Audio player */
-var audio = null;
-var audioTimer = null;
-var pausePos = 0;
+        //PLAY AUDIO
+        function onDeviceReady_PlayAudio() {
+			var text_bt_play= $('#bt_mp3_treine').text();
+			
+			$( "#bt_mp3_treine" ).on( "tap", function( event ) {
+				
+				if(text_bt_play== "PLAY"){
+					playAudio("http://www.inmui.hol.es/uploads/TMPGEnc.mp3");
+					$("#bt_mp3_treine").html("STOP");
+				}
+				if(text_bt_play== "STOP"){
+					stopAudio();
+				} 	
+				
+			});
+			
+        }
 
-/* play audio file */
-function playAudio(file){
-	audio = new Media(file, function(){ // success callback
-    	console.log("playAudio():Audio Success");
-    }, function(error){ // error callback
-    	alert('code: '    + error.code    + '\n' + 
-          	  'message: ' + error.message + '\n');
-    });
-    
-    // get audio duration
-    var duration = audio.getDuration();
-    
-    // set slider data
-    if( duration > 0 ){
-	    $('#slider').attr( 'max', Math.round(duration) );
-	    $('#slider').slider('refresh');
-    }
-    
-    // play audio
-    audio.play();
-    
-    audio.seekTo(pausePos*1000);
+        // Audio player
+        var my_media = null;
+        var mediaTimer = null;
 
-    // update audio position every second
-    if (audioTimer == null) {
-        audioTimer = setInterval(function() {
-            // get audio position
-            audio.getCurrentPosition(
-                function(position) { // get position success
-                    if (position > -1) {
-                        setAudioPosition(position);
-                    }
-                }, function(e) { // get position error
-                    console.log("Error getting pos=" + e);
-                    //setAudioPosition(duration);
-                }
-            );
+        // Play audio
+        //
+        function playAudio(src) {
+            // Create Media object from src
+            my_media = new Media(src, onSuccess_audio, onError_audio);
+
+            // Play audio
+            my_media.play();
+
+            // Update my_media position every second
+            if (mediaTimer == null) {
+                mediaTimer = setInterval(function() {
+                    // get my_media position
+                    my_media.getCurrentPosition(
+                        // success callback
+                        function(position) {
+                            if (position > -1) {
+                                setAudioPosition((position) + " sec");
+                            }
+                        },
+                        // error callback
+                        function(e) {
+                            console.log("Error getting pos=" + e);
+                            setAudioPosition("Error: " + e);
+                        }
+                    );
+                }, 1000);
+            }
+        }
+
+        // Pause audio
+        function pauseAudio() {
+            if (my_media) {
+                my_media.pause();
+            }
+        }
+
+        // Stop audio
+        function stopAudio() {
+            if (my_media) {
+                my_media.stop();
+            }
+            clearInterval(mediaTimer);
+            mediaTimer = null;
+        }
+
+        // onSuccess Callback
+        function onSuccess_audio() {
+            console.log("playAudio():Audio Success");
+        }
+
+        // onError Callback
+        function onError_audio(error) {
+            alert('code: '    + error.code    + '\n' +
+                  'message: ' + error.message + '\n');
+        }
+
+        // Set audio position
+        function setAudioPosition(position) {
+            document.getElementById('audio_position_play').innerHTML = position;
+        }
+		//FIM DE PLAYER DE AUDIO
+
+//GRAVAÇÃO DE AUDIO
+function recordAudio() {
+        var src = "myrecording.mp3";
+        var mediaRec = new Media(src, onSuccess_record, onError_record);
+
+        // Record audio
+        mediaRec.startRecord();
+
+        // Stop recording after 10 sec
+        var recTime = 0;
+        var recInterval = setInterval(function() {
+            recTime = recTime + 1;
+            setAudioPosition_rec(recTime + " sec");
+            if (recTime >= 10) {
+                clearInterval(recInterval);
+                mediaRec.stopRecord();
+            }
         }, 1000);
     }
-}
 
-/* pause audio */
-function pauseAudio() {
-    if (audio) {
-        audio.pause();
+    // device APIs are available
+    function onDeviceReady_rec_audio() {
+        recordAudio();
     }
-}
-
-/* stop audio */
-function stopAudio() {
-    if (audio) {
-        audio.stop();
-        audio.release();
+	
+	// Stop
+    function stop_rec_audio() {
+        clearInterval(recInterval);
+		mediaRec.stopRecord();
     }
-    clearInterval(audioTimer);
-    audioTimer = null;
-    pausePos = 0;
-}
 
-/* set audio position */
-function setAudioPosition(position) {
-	pausePos = position;
-	position = Math.round(position);
-    $('#slider').val(position);
-    $('#slider').slider('refresh');
-}
+    // onSuccess Callback
+    function onSuccess_record() {
+        console.log("recordAudio():Audio Success");
+    }
 
-/* record audio file */
-function recordAudio(file){
-	audioRec = new Media(file, function(){ // success callback
-    	console.log("recordAudio():Audio Success");
-    }, function(error){ // error callback
-    	alert('recording error : ' + error.message);
-    });
-    
-    // start recording
-    audioRec.startRecord();
-    
-    // stop recording after 10 seconds
-    setTimeout(function(){
-    	audioRec.stopRecord();
-    	audioRec.release();
-    }, 10000);
-}
+    // onError Callback
+    function onError_record(error) {
+        alert('code: '    + error.code    + '\n' +
+              'message: ' + error.message + '\n');
+    }
+
+    // Set audio position
+    function setAudioPosition_rec(position) {
+        document.getElementById('audio_position_rec').innerHTML = position;
+    }

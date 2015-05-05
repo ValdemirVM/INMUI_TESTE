@@ -117,67 +117,6 @@ $(document).bind("mobileinit", function() {
 	margin: 0;
 	padding:0;
 }
-/*AUDIO RECORD*/
-#slider{
-	display:none;
-}
-
-div.ui-slider{
-	margin:0;
-	width:100%;
-}
-
-#recording{
-	font-weight: bold;
-	color:#f00;
-}
-
-.ui-icon-audio-play {
-	background-image: url("images/18/play.png");
-}
-
-.ui-icon-audio-pause {
-	background-image: url("images/18/pause.png");
-}
-
-.ui-icon-audio-stop {
-	background-image: url("images/18/stop.png");
-}
-
-.ui-icon-audio-rewind {
-	background-image: url("images/18/rewind.png");
-}
-
-.ui-icon-audio-record {
-	background-image: url("images/18/record.png");
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio: 2) {
-	.ui-icon-audio-play {
-		background-image: url("images/36/play.png");
-		background-size: 18px 18px;
-	}
-	
-	.ui-icon-audio-pause {
-		background-image: url("images/36/pause.png");
-		background-size: 18px 18px;
-	}
-	
-	.ui-icon-audio-stop {
-		background-image: url("images/36/stop.png");
-		background-size: 18px 18px;
-	}
-	
-	.ui-icon-audio-rewind {
-		background-image: url("images/36/rewind.png");
-		background-size: 18px 18px;
-	}
-	
-	.ui-icon-audio-record {
-		background-image: url("images/36/record.png");
-		background-size: 18px 18px;
-	}
-}
 
 </style>
 <script id="panel-init">
@@ -224,7 +163,7 @@ $( document ).ready(function() {});
 </div><!-- Pagina 1 -->
 
 <!-- Pagina SHOW AO VIVO -->
-<div data-role="page" id="show" data-title="SHOW" data-theme="b">
+<div data-role="page" id="show" data-title="SHOW" data-theme="a">
 	
 	<div data-role="header">
     
@@ -255,19 +194,12 @@ $( document ).ready(function() {});
 		<div class="bts_sounds" id="la" ontouchstart="app.play('la');" ontouchend="app.touchEnd(event);">LA</div>
 		<div class="bts_sounds" id="lasu" ontouchstart="app.play('lasu');" ontouchend="app.touchEnd(event);">LA#</div>
 		<div class="bts_sounds" id="si" ontouchstart="app.play('si');" ontouchend="app.touchEnd(event);">SI</div>  
-    
-            <br>
-			<div id="audioPosition">
-                <input type="range" name="slider" id="slider" value="0" min="0" max="100" data-highlight="true" disabled />
-            </div>
-            <div data-role="controlgroup" data-type="horizontal">
-                <input type="button" id="play" data-role="button" data-icon="audio-play" data-iconpos="notext" value="Play" />
-                <input type="button" id="pause" data-role="button" data-icon="audio-pause" data-iconpos="notext" value="Pause" disabled />
-                <input type="button" id="stop" data-role="button" data-icon="audio-stop" data-iconpos="notext" value="Stop" />
-                <input type="button" id="rewind" data-role="button" data-icon="audio-rewind" data-iconpos="notext" value="Rewind" />
-                <input type="button" id="record" data-role="button" data-icon="audio-record" data-iconpos="notext" value="Record">
-            </div>
-            <div id="recording"></div>
+   
+	<div id="div_rec_audio">
+	<a href="#" id="play_audio_rec" ontouchstart="recordAudio();"><img src="images/36/record.png" alt=""/></a> 
+    <a href="#" id="stop_audio_rec" ontouchstart="stop_rec_audio();"><img src="images/36/stop.png" alt=""/></a>
+    <p id="audio_position_rec"></p>
+    </div>      
    
     <div id="div_play"></div>
     </div><!-- content -->
@@ -285,9 +217,10 @@ $( document ).ready(function() {});
 		
         <a href="#" class="bt_to_menu" data-role="button" data-icon="bullets" data-iconpos="left"> menu </a>
         <h2></h2> 
-		<a href="#" id="bt_mp3_treine" data-role="button" data-icon="audio" data-iconpos="right">PLAY</a> <br> 
+		<a href="#" id="bt_mp3_treine" data-role="button" data-icon="audio" data-iconpos="right">PLAY</a> 
     
     </div>
+    <span id="audio_position_play"></span>
     
 	<div data-role="content" data-="true">
 		<div class="bts_sounds" id="do" ontouchstart="app.play('do');" ontouchend="app.touchEnd(event);">DO</div>
@@ -359,22 +292,21 @@ $( document ).ready(function() {});
         <p><a href="#" id="exit_app" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-power">
         sair
         </a></p>
-   	<br><br>
     <div style="text-align:center;">	
     <img src="images/logo.png" alt="" style="width:70%;"/>
     </div> 
 </div><!-- painel_lateral esquerdo --> 
 
 <!-- painel_lateral direito -->  
-<div data-role="panel" id="painel_lateral_direito" data-position="right" data-display="push" data-theme="a">
-    <div style="text-align:center;">	
-    <img src="images/logo.png" alt="" style="width:70%;"/>
-    </div> 
-    <p style="font-size:10px;">
+<div data-role="panel" id="painel_lateral_direito" data-position="right" data-display="push" data-theme="b">
+     
+    <p style="font-size:10px; background-color:#000000; width:100%; padding:13px 7px 13px 9px;">
+    <span style="text-align:center;">	
+    </span>
     <strong>Usuários online: <span id="user_on_vivo"></span></strong><br><br>
     <strong>Streaming: <small id="textposition">stopped</small></strong><br><br>
-    <strong>Total de participantes no INMUI: <span id="total_streaming_vivo"></span></strong><br><br>
-
+    <strong>Total de participantes: <span id="total_streaming_vivo"></span></strong><br>
+	<img src="images/play.gif" style="width:70%;" alt=""/> 
     </p>
 </div><!-- painel_lateral direito --> 
 
