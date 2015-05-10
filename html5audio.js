@@ -22,7 +22,7 @@ function pad2(number) {
 	return (number < 10 ? '0' : '') + number
 }
 
-var myaudioURL = 'http://s34.myradiostream.com:6334/;';
+var myaudioURL = 'http://shoutcast.inmui.ninja:9992/;'; //http://s34.myradiostream.com:6334/
 var myaudio = new Audio(myaudioURL);
 var isPlaying = false;
 var readyStateInterval = null;
@@ -70,16 +70,16 @@ var html5audio = {
 		myaudio.addEventListener("ended", function() {
 			 //console.log('myaudio ENDED');
 			 html5audio.stop();
-			 // navigator.notification.alert('Streaming failed. Possibly due to a network error.', null, 'Stream error', 'OK');
-			 // navigator.notification.confirm(
-			 //	'Streaming failed. Possibly due to a network error.', // message
-			 //	onConfirmRetry,	// callback to invoke with index of button pressed
-			 //	'Stream error',	// title
-			 //	'Retry,OK'		// buttonLabels
-			 // );
-			 if (window.confirm('Streaming failed. Possibly due to a network error. Retry?')) {
-			 	onConfirmRetry();
-			 }
+			 //navigator.notification.alert('OFFLINE/SLOW CONNECTION - estabeleça uma conexão!', null, 'Stream error', 'OK');
+			 navigator.notification.confirm(
+			 'OFFLINE/SLOW CONNECTION - estabeleça uma conexão!', // message
+			 onConfirmRetry,	// callback to invoke with index of button pressed
+			 'Stream error',	// title
+			 'PLAY MUSIC, STOP MUSIC'		//Retry,OK buttonLabels
+			 );
+			 //if (window.confirm('Streaming failed. Possibly due to a network error.')) {
+			 	//onConfirmRetry();
+			 //}
 		}, false);
 	},
 	pause: function() {

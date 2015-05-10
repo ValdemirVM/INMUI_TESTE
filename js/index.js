@@ -44,6 +44,10 @@ function carregar_bts(){//Função para carregar botões
 		$( "#painel_lateral_direito" ).panel( "open");
 	});
 	
+	$( "#bt_to_player" ).on( "tap", function( event ) { //Bt do treine para o Player
+		$( "#painel_lateral_treine" ).panel( "open");
+	});	
+	
 	$( ".bt_to_vivo" ).on( "tap", function( event ) {  //Bt da home show ao vivo
 		$.mobile.pageContainer.pagecontainer('change', '#show', {
 				transition: 'flip', //Transição
@@ -71,6 +75,12 @@ function carregar_bts(){//Função para carregar botões
 			$.mobile.pageContainer.pagecontainer('change', '#treine', { role: 'page', transition: 'slide' });
 		}
 	});
+		
+	$( "#bt_to_player" ).on( "tap", function( event ) { //Bt do show para useruarios online
+		$( "#painel_lateral_treine" ).panel( "open");
+	});
+	
+	  
 	$( "#bt_to_chat_text" ).on( "tap", function( event ) {  //Bt do menu lateral para CHATTEXT
 		if($.mobile.activePage[0].id== "chat_text"){
 			$( "#painel_lateral" ).panel( "close" );
@@ -98,6 +108,102 @@ function carregar_bts(){//Função para carregar botões
 	});//Bt do menu lateral para SAIR
 	
 }//Fim de função carregar_bts
+
+/***** FUNÇÃO PARA TOOGLE DE VALOR DE INPUT TEXT  *****/
+jQuery.fn.inputtoggle = function(){
+	$(this).each(function(index){ 
+		var myvalue = $(this).attr("value"); 
+		$(this).focusin(function(){
+		if($(this).val() == myvalue)
+			$(this).val("");
+	    });  
+	    $(this).focusout(function(){
+			if($(this).val() === "")
+				$(this).val(myvalue);
+		});
+	});    
+};
+
+//Verifica se ja existe login
+function verifica_key(){
+	
+	var key= '';
+	
+	db = window.sqlitePlugin.openDatabase({name: "db_inmui"});
+	
+	if(db){
+	db.transaction(function(tx) {
+		// Cria a Tabela "tabela_testes"
+		tx.executeSql('CREATE TABLE IF NOT EXISTS apelidos_inmui (id integer primary key, apelido text)');
+		// Faz uma busca na tabela
+		tx.executeSql("SELECT * FROM apelidos_inmui;", [], function(tx, res) {
+		//alert("Quantidade Resultados: " + res.rows.length);
+		//for (var i = 0;i<=res.rows.length;i++){
+			//alert("Linha "+i+": "+res.rows.item(i).apelido);
+		//}
+		if(res.rows.length > 1){
+			key= res.rows.item(0);
+		}else{
+			key= 0;
+		}
+		
+		});
+	});
+	}
+	
+	return key;
+}
+//Login do app
+function login_inmui(){ 
+	var key= ''; 
+	var text_key = $("#login_inmui").val(); //Key login
+	
+	if(text_key.length < 2 || text_key == 'Digite um apelido.'){ //login vazio
+		alert('Escreva um apelido com 2 ou mais caracteres!');
+		
+	}else{
+	
+		cria_db_table(); //Cria table
+		
+		if(verifica_key() == 0){ //Se não existe key
+		
+			//sql
+			db = window.sqlitePlugin.openDatabase({name: "db_inmui"});
+				db.transaction(function(tx) {
+					
+				// Cria a Tabela "tabela_testes"
+				tx.executeSql('CREATE TABLE IF NOT EXISTS apelidos_inmui (id integer primary key, apelido text)');
+				// Adiciona um elemento a tabela
+				tx.executeSql("INSERT INTO apelidos_inmui (apelido) VALUES (?)", [text_key]);
+			
+				tx.executeSql("SELECT * FROM apelidos_inmui;", [], function(tx, res) {
+					key= res.rows.item(0);
+				});		
+			});			 
+		}else{
+			alert("Erro no app (key clonado)"); 
+			
+		}//Se não existe key
+		
+		//Colocar aqui o ajax para enviar o key logado e enviar um push
+	
+	}//login vazio
+}
+//Função de inicialização do app para verificar o login para bloquear app
+function seguranca_init(){
+	
+	var key= verifica_key();
+	
+	if(key == 0 || key == ''){ //Se não existe key
+		$('.bt_to_menu').hide(); //Desabilita link do app 
+		$('.bt_to_vivo').hide(); 
+		$('.footer_init_inmui').show(); //Footer de login
+	}else{
+		$('.bt_to_menu').show(); //Desabilita link do app 
+		$('.bt_to_vivo').show();
+		$('.footer_init_inmui').hide(); //Footer de login
+	}
+}
 
 //Check o tipo de conexão
 function checkConnection() {
@@ -307,14 +413,26 @@ var app = {
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() { //Insira aqui todas as funções p inicializar
 	
+		seguranca_init(); //Inicializa o login
+	
+		$("#login_inmui").inputtoggle(); //Toogle input
+	
 		carregar_bts(); //Carregar botões
 		
-		html5audio.play(); //Play streaming
+        onDeviceReady_rec_audio(); //PLAYER AUDIO
+				
+		$(document).on("pagecontainershow", function (e, ui) {//Ações em determinada pagina 
 		
-        onDeviceReady_PlayAudio(); //PLAYER AUDIO
-		
-		//Largura dos botões de som
-		$(document).on("pagecontainershow", function () { 
+			var prev_page = ui.prevPage[0].id; //Mensagem inicial
+			  if (prev_page = "page_init") {
+				setTimeout(function () {
+					$('#popup_msg').popup('open', {
+						transition: 'pop'
+					});
+				}, 1000);
+			}
+			
+			//Redimencionar bts
 			var width_bt_som = $( window ).width() / 3 - 32;
 			$(".bts_sounds").css({"width": width_bt_som + "px"});
 				
@@ -322,37 +440,39 @@ var app = {
 				var width_bt_som = $( window ).width() / 3 - 32;
 				$(".bts_sounds").css({"width": width_bt_som + "px"});
 			});
+			
+			if($.mobile.activePage[0].id== "page_init"){ //Mensagem inicial de texto
+				setTimeout(function () {
+					$('#popup_msg').popup('open', {
+						transition: 'pop'
+					});
+				}, 1000);
+			}
+			if($.mobile.activePage[0].id== "show"){ 
+				html5audio.play(); //Play streaming
+			}
+			if($.mobile.activePage[0].id!= "show"){ 
+				html5audio.stop(); //Stop streaming
+			}
+			
+		});
+		
+		if($.mobile.activePage[0].id== "treine"){ //Textearea height
+				resize_text_websockets (); 
+		}
+		
+		initPushwoosh(); //Função de push
+		
+		loadScript("phonegap-websocket.js",function(){ //websockets
+			createClient();
+			resize_text_websockets (); //Para redimencionar textarea que recebe os textos		
 		});
 	
 		//Mensagens na inicialização
 		var msg_init_inmui = ['A terra pede socorro, ajude-a.', 'Salve sua casa, salve o planeta.', 'Ame a sua vida, cuide de seu planeta.', 'A poluição nos mata, nos entristece, nos envelhece.', 'Seja feliz, mantenha limpa as ruas e os rios.', 'Sorria para a esperança de um planeta saudável.', 'Tenha coragem e denuncie os crimes ambientais.', 'Os animais são seres vivos e merecem respeito.', 'Menos carros; mais ar para a vida.', 'Respeite a você mesmo, respeite a natureza.', 'Lembre-se, estamos todos em um só planeta.', 'Todos querem o perfume das flores, mas poucos sujam suas mãos para cultivá-las. <br>(Augusto Cury)', 'Ambiente limpo não é o que mais se limpa e sim o que menos se suja. <br>(Chico Xavier) ', 'A natureza pode suprir todas as necessidades do homem, menos a sua ganância. <br>(Mahatma Gandhi) ', 'A sabedoria da natureza é tal que não produz nada de supérfluo ou inútil. <br>(Nicolau Copérnico) ', 'É triste pensar que a natureza fala e que o gênero humano não a ouve. <br>(Victor Hugo) ', 'A natureza é o único livro que oferece um conteúdo valioso em todas as suas folhas. <br>(Johann Wolfgang von Goethe) ', 'Se soubesse que o mundo se acaba amanhã, eu ainda hoje plantaria uma árvore. <br>(Martin Luther King Jr.) ', 'Digo que minha música vem da natureza, agora mais do que nunca. Amo as árvores, as pedras, os passarinhos. <br>(Tom Jobim) ', 'Nunca o homem inventará nada mais simples nem mais belo do que uma manifestação da natureza. <br>(Leonardo da Vinci) ', 'A terra é insultada e oferece suas flores como resposta. <br>(Rabindranath Tagore) ', 'O animal selvagem e cruel não é aquele que está atrás das grades. É o que está na frente delas. <br>(Axel Munthe) ', 'Só se pode vencer a natureza obedecendo-lhe. <br>(Francis Bacon) ', 'Eu adoraria pintar do jeito que o pássaro canta. <br>(Claude Monet) ', 'Podes cortar todas as flores mas não podes impedir a Primavera de aparecer. <br>(Pablo Neruda)', 'O coração do homem, quando longe da natureza, endurece. <br>(Povo Indígena Lakota) ', 'Às vezes ouço passar o vento; e só de ouvir o vento passar, vale a pena ter nascido. <br>(Fernando Pessoa) ', 'A Floresta Amazônica não pode, ela própria, entrar na Justiça contra os desmatadores. Nós é que temos de fazer isso. <br>(Marina Silva) ', 'O nível da poluição ambiental no planeta é igualada a burrice dos homens. <br>(Edy Gahr) ', 'A responsabilidade social e a preservação ambiental significa um compromisso com a vida. <br>(João Bosco da Silva) ', 'É tão humano escrever sobre conscientização ambiental. Díficil é sustentar essa idéia quando uma pessoa joga o lixo na rua. <br>(Dani Leão) ', 'Quem ama preserva. Preservar o meio ambiente é preservar a VIDA. <br>(Andrea Taiyoo) ', 'Recicle o lixo,feche a torneira quando estiver escovando os dentes... somente você e eu poderemos salvar o mundo. <br>(Andrea Taiyoo) ', 'Preservar o Meio Ambiente é uma lição de todos, futuras gerações agradecem esta idéia. <br>(Carlos Alberto da Silveira) ', 'Preservai a atmosfera do planeta: - chuva não se fabrica!  <br>(AJCMusskoff)'];
 		var show_msg_init = msg_init_inmui[Math.floor(Math.random() * msg_init_inmui.length)];
 		document.getElementById("msg_init_inmui").innerHTML = "<h3>" + show_msg_init +"</h3>";
-				
-		$(document).on("pagecontainershow", function (e, ui) {//Ações em determinada pagina
-			  var prev_page = ui.prevPage[0].id;
-			  if (prev_page = "page_init") {
-				setTimeout(function () {
-					$('#popup_msg').popup('open', {
-						transition: 'pop'
-					});
-				}, 1000);
-			  }
-		});
-		if($.mobile.activePage[0].id== "page_init"){ //Mensagem inicial de texto
-			setTimeout(function () {
-				$('#popup_msg').popup('open', {
-					transition: 'pop'
-				});
-			}, 1000);
-		}
-		
-        initPushwoosh(); //Função de push
-		
-		loadScript("phonegap-websocket.js",function(){ //websockets
-			createClient();
-			resize_text_websockets (); //Para redimencionar textarea que recebe os textos		
-		});
+			
 		
 		if( window.plugins && window.plugins.NativeAudio ) {
 	
@@ -372,11 +492,13 @@ var app = {
 		}
 		
 
+		
+		
 		app.receivedEvent('deviceready');
 
 	},
 	onOffline: function() { 
-		alert("sem conexão");
+		alert("OFFLINE - uma conexão é necessária!");
 		navigator.app.exitApp();
 	},
 	// Update DOM on a Received Event

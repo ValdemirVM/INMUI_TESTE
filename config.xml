@@ -24,6 +24,8 @@
     <gap:plugin name="com.pushwoosh.plugins.pushwoosh" source="plugins.cordova.io" />
 	<!-- Audio -->
 	<gap:plugin name="de.neofonie.cordova.plugin.nativeaudio" version="3.0.2" />
+	<!-- SQL -->
+	<gap:plugin name="com.bordeux.sqlite-plugin" version="1.0.1" />
 	
 	<!-- <gap:plugin name="com.phonegap.plugins.facebookconnect" version="0.4.0"> -->
 		<!-- <param name="APP_ID" value="1415656032081293" /> -->
@@ -78,7 +80,10 @@
     
 	<access origin="*" />
 	<access origin="*.pushwoosh.com"/> <!-- allow pushwoosh service -->
-	<access origin="*.myradiostream.com"/> <!-- streaming -->
+	<access origin="*.inmui.ninja"/> <!-- streaming -->
+	<access origin="http://shoutcast.inmui.ninja:9992/"/> <!-- streaming -->
+	
+	<!-- <access origin="*.myradiostream.com"/>  streaming -->
 	<access origin="devgeeks" subdomains="true" />
  
 </widget>
