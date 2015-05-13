@@ -16,6 +16,8 @@ $(document).bind("mobileinit", function() {
 	$.mobile.loader.prototype.options.theme = "a";
 	$.mobile.loader.prototype.options.textonly = false;
 	$.mobile.loader.prototype.options.html = "";
+	$.mobile.allowCrossDomainPages = true;
+	$.mobile.phonegapNavigationEnabled = true;
 }); 
 
 </script>
@@ -24,7 +26,6 @@ $(document).bind("mobileinit", function() {
 <script type="text/javascript" charset="utf-8" src="nativeaudio.js"></script>
 <script type="text/javascript" charset="utf-8" src="html5audio.js"></script>
 <script type="text/javascript" charset="utf-8" src="record.js"></script>
-<script type="text/javascript" charset="utf-8" src="SQLitePlugin.js"></script>
 <script type="text/javascript" src="http://dfdbz2tdq3k01.cloudfront.net/js/2.1.0/ortc.js"></script>
 <script type="text/javascript" src="PushNotification.js"></script>
 <script type="text/javascript" src="js/PushwooshAndroid.js"></script>
@@ -53,18 +54,24 @@ $(document).bind("mobileinit", function() {
 	width: 100% !important; 
 	height: 100% !important; 
 	background: url(images/bg_degra.png) no-repeat center center fixed !important; 
-	-webkit-background-size: 35%; 
-	-moz-background-size: 35%; 
-	-o-background-size: 35%; 
-	background-size: 35%; 
+	-webkit-background-size: 100%; 
+	-moz-background-size: 100%; 
+	-o-background-size: 100%; 
+	background-size: 100%; 
 	z-index: -1; 
 }
 .ui-page{ 
 	background:none;
+	padding:0;
 }
 .ui-header {
-    background-color:transparent !important; /*#690003 / transparent*/ 
-	border:hidden; 
+    background-color:transparent !important; /*#690003*/ 
+	border:hidden;   
+}
+#footer_init .ui-input-text{
+    width: 80% !important;
+	margin:4px 4px 4px 7px !important;
+	float:left;
 }
 #footer_chat .ui-input-text{
     width: 80% !important;
@@ -133,12 +140,8 @@ $(document).bind("mobileinit", function() {
 	});
 </script>
 
-<script type="text/javascript">
-$( document ).ready(function() {});
-</script>
-
 </head> 
-<body onselectstart="return false"> 
+<body> 
 <div data-role="page" id="page_init" data-title="INMUI" data-theme="a">
 	
 	<div data-role="header">
@@ -157,10 +160,11 @@ $( document ).ready(function() {});
     </div><!-- content -->
     
     <!-- footer -->
-	<div data-role="footer" id="footer_init_inmui" data-position="fixed" data-theme="b">
-    <span id="footer_chat">
+	<div data-role="footer" class="nav-mobilyzer" data-position="fixed" data-tap-toggle="false" data-theme="b">
+    <span id="footer_init">
     <input type="text" id="login_inmui" value="Digite um apelido."/>
-    <a href="#" id="btn_login_inmui" onclick="login_inmui();" style="width:10%; float:left; margin-top:2px;"><img src="images/security.png" style="height:40px;" alt=""/>
+    <a href="#" id="btn_login_inmui" style="width:10%; float:left; margin-top:2px;">
+    <img src="images/security.png" style="height:40px;" alt=""/>
     </a></span>
     
 	</div><!-- footer -->
@@ -191,24 +195,23 @@ $( document ).ready(function() {});
 	</div><!-- header -->
      
     <!-- content -->
-	<div data-role="content">
+	<div data-role="content" onselectstart="return false">
       
-		<div class="bts_sounds" id="do" ontouchstart="app.play('do');" ontouchend="app.touchEnd(event);">DO</div>
-		<div class="bts_sounds" id="dosu" ontouchstart="app.play('dosu');" ontouchend="app.touchEnd(event);">DO#</div>
-		<div class="bts_sounds" id="re" ontouchstart="app.play('re');" ontouchend="app.touchEnd(event);">RE</div>
-		<div class="bts_sounds" id="resu" ontouchstart="app.play('resu');" ontouchend="app.touchEnd(event);">RE#</div>
-		<div class="bts_sounds" id="mi" ontouchstart="app.play('mi');" ontouchend="app.touchEnd(event);">MI</div>
-		<div class="bts_sounds" id="fa" ontouchstart="app.play('fa');" ontouchend="app.touchEnd(event);">FA</div>
-		<div class="bts_sounds" id="fasu" ontouchstart="app.play('fasu');" ontouchend="app.touchEnd(event);">FA#</div>
-		<div class="bts_sounds" id="sol" ontouchstart="app.play('sol');" ontouchend="app.touchEnd(event);">SOL</div>
-		<div class="bts_sounds" id="solsu" ontouchstart="app.play('solsu');" ontouchend="app.touchEnd(event);">SOL#</div>
-		<div class="bts_sounds" id="la" ontouchstart="app.play('la');" ontouchend="app.touchEnd(event);">LA</div>
-		<div class="bts_sounds" id="lasu" ontouchstart="app.play('lasu');" ontouchend="app.touchEnd(event);">LA#</div>
-		<div class="bts_sounds" id="si" ontouchstart="app.play('si');" ontouchend="app.touchEnd(event);">SI</div>  
-        <br>
+		<div class="bts_sounds" id="do" ontouchstart="app.play('do', 'do');" ontouchend="app.touchEnd(event);">DO</div>
+		<div class="bts_sounds" id="dosu" ontouchstart="app.play('dosu', 'dosu');" ontouchend="app.touchEnd(event);">DO#</div>
+		<div class="bts_sounds" id="re" ontouchstart="app.play('re', 're');" ontouchend="app.touchEnd(event);">RE</div>
+		<div class="bts_sounds" id="resu" ontouchstart="app.play('resu', 'resu');" ontouchend="app.touchEnd(event);">RE#</div>
+		<div class="bts_sounds" id="mi" ontouchstart="app.play('mi', 'mi');" ontouchend="app.touchEnd(event);">MI</div>
+		<div class="bts_sounds" id="fa" ontouchstart="app.play('fa', 'fa');" ontouchend="app.touchEnd(event);">FA</div>
+		<div class="bts_sounds" id="fasu" ontouchstart="app.play('fasu', 'fasu');" ontouchend="app.touchEnd(event);">FA#</div>
+		<div class="bts_sounds" id="sol" ontouchstart="app.play('sol', 'sol');" ontouchend="app.touchEnd(event);">SOL</div>
+		<div class="bts_sounds" id="solsu" ontouchstart="app.play('solsu', 'solsu');" ontouchend="app.touchEnd(event);">SOL#</div>
+		<div class="bts_sounds" id="la" ontouchstart="app.play('la', 'la');" ontouchend="app.touchEnd(event);">LA</div>
+		<div class="bts_sounds" id="lasu" ontouchstart="app.play('lasu', 'lasu');" ontouchend="app.touchEnd(event);">LA#</div>
+		<div class="bts_sounds" id="si" ontouchstart="app.play('si', 'si');" ontouchend="app.touchEnd(event);">SI</div>
      <div class="div_play"></div>
-   
-	<div id="div_rec_audio">
+	
+    <div id="div_rec_audio">
 	<a href="#" id="play_audio_rec" ontouchstart="recordAudio();"><img src="images/36/record.png" alt=""/></a> 
     <a href="#" id="stop_audio_rec" ontouchstart="stop_rec_audio();"><img src="images/36/stop.png" alt=""/></a>
     <p id="audio_position_rec"></p>
@@ -218,7 +221,7 @@ $( document ).ready(function() {});
     </div><!-- content -->
     
     <!-- footer -->
-	<div data-role="footer" data-position="fixed">
+	<div data-role="footer">
 	</div><!-- footer -->
     
 </div><!-- Pagina SHOW AO VIVO -->
@@ -229,34 +232,33 @@ $( document ).ready(function() {});
 	<div data-role="header">
     
 	<a href="#" class="bt_to_menu" data-role="button" data-icon="bullets" data-iconpos="left"> menu </a>
-        <h2></h2> 
+        <h2 style="font-size:11px; color:#E1E1E1; padding-top:14px;">off-line</h2> 
 	<a href="#" id="bt_to_player" data-role="button" data-icon="audio" data-iconpos="right"> play music </a> 
     
     </div>
     
-	<div data-role="content" data-="true">
-		<div class="bts_sounds" id="do" ontouchstart="app.play('do');" ontouchend="app.touchEnd(event);">DO</div>
-		<div class="bts_sounds" id="dosu" ontouchstart="app.play('dosu');" ontouchend="app.touchEnd(event);">DO#</div>
-		<div class="bts_sounds" id="re" ontouchstart="app.play('re');" ontouchend="app.touchEnd(event);">RE</div>
-		<div class="bts_sounds" id="resu" ontouchstart="app.play('resu');" ontouchend="app.touchEnd(event);">RE#</div>
-		<div class="bts_sounds" id="mi" ontouchstart="app.play('mi');" ontouchend="app.touchEnd(event);">MI</div>
-		<div class="bts_sounds" id="fa" ontouchstart="app.play('fa');" ontouchend="app.touchEnd(event);">FA</div>
-		<div class="bts_sounds" id="fasu" ontouchstart="app.play('fasu');" ontouchend="app.touchEnd(event);">FA#</div>
-		<div class="bts_sounds" id="sol" ontouchstart="app.play('sol');" ontouchend="app.touchEnd(event);">SOL</div>
-		<div class="bts_sounds" id="solsu" ontouchstart="app.play('solsu');" ontouchend="app.touchEnd(event);">SOL#</div>
-		<div class="bts_sounds" id="la" ontouchstart="app.play('la');" ontouchend="app.touchEnd(event);">LA</div>
-		<div class="bts_sounds" id="lasu" ontouchstart="app.play('lasu');" ontouchend="app.touchEnd(event);">LA#</div>
-		<div class="bts_sounds" id="si" ontouchstart="app.play('si');" ontouchend="app.touchEnd(event);">SI</div>  
+	<div data-role="content" onselectstart="return false">
+		<div class="bts_sounds" id="do_off" ontouchstart="app.play('do', 'do_off');" ontouchend="app.touchEnd(event);">DO</div>
+		<div class="bts_sounds" id="dosu_off" ontouchstart="app.play('dosu', 'dosu_off');" ontouchend="app.touchEnd(event);">DO#</div>
+		<div class="bts_sounds" id="re_off" ontouchstart="app.play('re', 're_off');" ontouchend="app.touchEnd(event);">RE</div>
+		<div class="bts_sounds" id="resu_off" ontouchstart="app.play('resu', 'resu_off');" ontouchend="app.touchEnd(event);">RE#</div>
+		<div class="bts_sounds" id="mi_off" ontouchstart="app.play('mi', 'mi_off');" ontouchend="app.touchEnd(event);">MI</div>
+		<div class="bts_sounds" id="fa_off" ontouchstart="app.play('fa', 'fa_off');" ontouchend="app.touchEnd(event);">FA</div>
+		<div class="bts_sounds" id="fasu_off" ontouchstart="app.play('fasu', 'fasu_off');" ontouchend="app.touchEnd(event);">FA#</div>
+		<div class="bts_sounds" id="sol_off" ontouchstart="app.play('sol', 'sol_off');" ontouchend="app.touchEnd(event);">SOL</div>
+		<div class="bts_sounds" id="solsu_off" ontouchstart="app.play('solsu', 'solsu_off');" ontouchend="app.touchEnd(event);">SOL#</div>
+		<div class="bts_sounds" id="la_off" ontouchstart="app.play('la', 'la_off');" ontouchend="app.touchEnd(event);">LA</div>
+		<div class="bts_sounds" id="lasu_off" ontouchstart="app.play('lasu', 'lasu_off');" ontouchend="app.touchEnd(event);">LA#</div>
+		<div class="bts_sounds" id="si_off" ontouchstart="app.play('si', 'si_off');" ontouchend="app.touchEnd(event);">SI</div>
     <div class="div_play"></div>
 	</div><!-- content -->
  
-    <div data-role="footer">
-    </div><!-- footer -->
+    
 
 </div><!-- Pagina TREINE -->
 
-<!-- Pagina CHATTEXT -->
-<div data-role="page" id="chat_text" data-title="CHAT TEXTUAL" data-theme="c">
+<!-- Pagina CHATTEXT MUSICAL -->
+<div data-role="page" id="chat_sound_page" data-title="CHAT TEXTUAL" data-theme="c">
 	<div data-role="header">
 		
         <a href="#" class="bt_to_menu" data-role="button" data-icon="bullets" data-iconpos="left"> menu </a>
@@ -265,16 +267,21 @@ $( document ).ready(function() {});
     
     </div>
     
-	<div data-role="content" data-="true" >
-    <img src="images/mundo.gif" style="width:10%;" alt=""/>
-	<textarea id="taLog" readonly ></textarea>
+	<div data-role="content">
+    <img src="images/mundo.gif" style="width:9%;" alt=""/>
+	<textarea id="taLog" readonly></textarea>
     <div class="div_play"></div>  
 	</div><!-- content -->
  
-    <div data-role="footer" data-position="fixed">
-    <span id="footer_chat"><input type="text" id="txtMessage"/><a href="#" id="btnSendMessage" onclick="send();" style="width:10%; float:left; margin-top:2px;"><img src="images/msg.png" style="height:40px;" alt=""/></a></span>
-    
+    <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+    <span id="footer_chat">
+    <input type="text" id="txtMessage" />
+    <a href="#" id="btnSendMessage" onclick="send();" style="width:10%; float:left; margin-top:2px;">
+    <img src="images/msg.png" style="height:40px;" alt=""/>
+    </a>
+    </span>
     </div><!-- footer -->
+    
 
 </div><!-- Pagina CHATTEXT -->
 
@@ -287,7 +294,7 @@ $( document ).ready(function() {});
 		    
     </div>
     
-	<div data-role="content" data-="true">
+	<div data-role="content">
     <br><br>
         
         
@@ -302,7 +309,8 @@ $( document ).ready(function() {});
 <div data-role="panel" id="painel_lateral" data-position="left" data-display="push" data-theme="c">
 		<p><a href="#" data-theme="b" id="bt_to_home" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-home">início</a></p>
         <p><a href="#" id="bt_to_treine" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-star">treine</a></p>
-        <p><a href="#" id="bt_to_chat_text" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-user">chat textual</a></p>
+        <p><a href="#" id="bt_to_chat_musical" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-user">chat musical</a></p>
+        <p><a href="chat_inmui.html" rel="external" data-transition="slide"  data-rel="page" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-user">chat textual</a></p>
 		<p><a href="#" id="bt_to_info" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-info">info</a></p>
         <p><a href="#" id="exit_app" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-power">
         sair
@@ -341,6 +349,7 @@ $( document ).ready(function() {});
 
 
 <script type="text/javascript">
+		//Funções para player do TREINE
 		function starMusicMp3(){
 			document.getElementById('audio_status_play_mp3').innerHTML = '&raquo; PLAY MUSIC';
 			document.getElementById('img_status_play_mp3').innerHTML = '<img style="width:50%;" src="images/play_sound.gif" alt=""/>';
@@ -358,6 +367,7 @@ $( document ).ready(function() {});
             timeStreamingMp3 = tempo_atual + 1;
             document.getElementById('audio_position_play_mp3').innerHTML = 'Time music: '+timeStreamingMp3;
 		}
+		//STREAMING DO RADIO 
 		playButton = document.getElementById('playbutton');
 		stopButton = document.getElementById('stopbutton');
 		activityIndicator = document.getElementById('activityindicator');

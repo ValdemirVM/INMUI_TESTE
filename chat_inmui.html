@@ -1,0 +1,325 @@
+﻿<!DOCTYPE html> 
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Inmui</title>
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="jquery-mobile/inmui.min.css" />
+<link rel="stylesheet" href="jquery-mobile/jquery.mobile.icons-1.4.5.min.css" />
+<link rel="stylesheet" href="jquery-mobile/jquery.mobile.structure-1.4.5.min.css" />
+<script src="jquery-mobile/jquery-1.11.0.min.js"></script> 
+<script type="text/javascript">
+$(document).bind("mobileinit", function() {
+	$.mobile.buttonMarkup.hoverDelay = 0; //Tap rapido
+	$.mobile.loader.prototype.options.text = "Aguarde..."; //Msg de loading
+	$.mobile.loader.prototype.options.textVisible = true;
+	$.mobile.loader.prototype.options.theme = "a";
+	$.mobile.loader.prototype.options.textonly = false;
+	$.mobile.loader.prototype.options.html = "";
+}); 
+
+</script>
+<script src="jquery-mobile/jquery.mobile-1.4.5.min.js"></script> 
+<script src="cordova.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://dfdbz2tdq3k01.cloudfront.net/js/2.1.0/ortc.js"></script>
+<script type="text/javascript" src="PushNotification.js"></script>
+<script type="text/javascript" src="js/PushwooshAndroid.js"></script>
+<script type="text/javascript" src="js/PushwooshiOS.js"></script>
+
+<style type="text/css">
+.div_play{ 
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	width: 100% !important; 
+	height: 100% !important; 
+	background: url(images/bg_degra.png) no-repeat center center fixed !important; 
+	-webkit-background-size: 100%; 
+	-moz-background-size: 100%; 
+	-o-background-size: 100%; 
+	background-size: 100%; 
+	z-index: -1; 
+}
+.ui-page{ 
+	background:none;
+	padding:0;
+}
+.ui-header {
+    background-color:transparent !important; /*#690003*/ 
+	border:hidden;   
+}
+#footer_chat .ui-input-text{
+    width: 80% !important;
+	margin:4px 4px 4px 7px !important;
+	float:left;
+}
+
+</style>
+<script type="text/javascript">
+function carregar_bts(){//Função para carregar botões
+			
+	$( ".bt_to_menu" ).on( "tap", function( event ) { //Bt da home para Menu lateral
+		$( "#painel_lateral" ).panel( "open");
+	});
+	
+	$( ".bt_to_online" ).on( "tap", function( event ) { //Bt do show para useruarios online
+		$( "#painel_lateral_direito" ).panel( "open");
+	});
+	
+	$( "#bt_to_chat_text" ).on( "tap", function( event ) {  //Bt do menu lateral para home
+			$( "#painel_lateral" ).panel( "close" );
+	});
+	
+	$( "#exit_app" ).on( "tap", function( event ) {  //Bt do menu lateral para SAIR
+		
+			navigator.notification.confirm(
+            "SAIR?",
+            function (button) {
+              if (button==2) {
+                navigator.app.exitApp();
+              }
+            }, "Confirmar", ["Cancel","OK"] );
+
+	});//Bt do menu lateral para SAIR
+	
+}//Fim de função carregar_bts
+
+//Função Carregamento
+function showLoading_Mobile(){ 
+		$.mobile.loading( 'show', {
+			text: "Aguarde...",
+			textVisible: true,
+			theme: "a",
+			textonly: false,
+			html: ""
+		});
+}
+function hideLoading_Mobile(){
+		$.mobile.loading('hide');
+}
+
+//WEBSOCKETS
+function resize_text_websockets (id) {
+	alturaTela = $(window).height(); //Altura da tela
+	document.getElementById(id).style.height = Math.ceil(alturaTela/2) +'px'; //Define altura
+	//document.getElementById('taLog').style.height = document.getElementById('taLog').scrollHeight+'px'; //Aumenta altura a medida que insere texto
+	document.getElementById(id).scrollTop = document.getElementById(id).scrollHeight;
+}
+
+		var loadScript = function (url, callback) {
+            var script = document.createElement("script");
+            script.type = "text/javascript";
+
+            if (script.readyState) {  //IE
+                script.onreadystatechange = function () {
+                    if (script.readyState == "loaded" || script.readyState == "complete") {
+                        script.onreadystatechange = null;
+                        callback();
+                    }
+                };
+            } else {  //Others
+                script.onload = function () {
+                    callback();
+                };
+            }
+            script.src = url;
+            document.getElementsByTagName("head")[0].appendChild(script);
+        };     
+
+        //WEBSOCKETS PARA CHAT DE TEXTO
+		var ortcClient = null,
+            url = 'http://ortc-developers.realtime.co/server/2.1/',
+            applicationKey = 'X4Qz1S',
+            authenticationToken = 'mtnmcpNrerWb',
+            channel = 'my_channel';
+
+        // Log function
+        var Log = function (text) {
+            document.getElementById('taLog').value += "\n" + text;
+        }
+
+        // Sends a message
+        function send() {
+            var message = document.getElementById('txtMessage').value;
+            //Log("Message sent to channel: " + channel + ": " + message);
+            ortcClient.send(channel, message);
+        };
+		
+		 var onMessage = function (client, channel, message) {
+            //Log('Message received from channel ' + channel + ': ' + message);
+			Log(channel + ' : ' + message);
+			resize_text_websockets('talog');      
+           			
+        };
+
+        // Creates the client and the connection
+        var createClient = function () {
+            loadOrtcFactory(IbtRealTimeSJType, function (factory, error) {
+                // Checks if we have successfuly created the factory
+                if (error != null) {
+                    console.error(error);
+                }
+                else {
+                    // Creates the factory
+                    ortcClient = factory.createClient();                    
+                    ortcClient.setClusterUrl(url);
+
+                    // Callback for when we're connected
+                    ortcClient.onConnected = function (ortc) {
+                        Log("Connected to Realtime server " + ortcClient.getUrl());
+                        Log("Transport used: " + ortcClient.getProtocol());
+                        ortcClient.subscribe(channel, true, onMessage);
+                    };
+
+                    // Callback for when we're subscribed to a channel
+                    ortcClient.onSubscribed = function (ortc, channel) {
+                        //Log("Subscribed channel " + channel);
+						Log("Conectado.");
+                    };
+
+                    // Callback for when we get an exception
+                    ortcClient.onException = function (ortc, exception) {
+                        Log('Exception: ' + exception);
+                    };
+
+                    // Connects to the ORTC server
+                    Log("Conectando...");
+                    ortcClient.connect(applicationKey, authenticationToken);
+                }
+            });
+        };
+		
+/* --------------------- PUSH ------------------------- */
+function initPushwoosh() {
+	var pushNotification = cordova.require("com.pushwoosh.plugins.pushwoosh.PushNotification");
+	if(device.platform == "Android")
+	{
+		registerPushwooshAndroid();
+	}
+
+	if(device.platform == "iPhone" || device.platform == "iOS")
+	{
+		registerPushwooshIOS();
+	}
+}
+
+var app = {
+    // Application Constructor
+    initialize: function() {
+        this.bindEvents();
+    },
+    // Bind Event Listeners
+    //
+    // Bind any events that are required on startup. Common events are:
+    // 'load', 'deviceready', 'offline', and 'online'.
+    bindEvents: function() {
+		document.addEventListener("offline", this.onOffline, false);
+        document.addEventListener('deviceready', this.onDeviceReady, false);
+    },
+    // deviceready Event Handler
+    //
+    // The scope of 'this' is the event. In order to call the 'receivedEvent'
+    // function, we must explicity call 'app.receivedEvent(...);'
+    onDeviceReady: function() { //Insira aqui todas as funções p inicializar
+	
+		carregar_bts();
+		
+		//Posição do footer ao exibir teclado
+		$(document).on('focus', 'input, textarea', function() {
+			$.mobile.activePage.find("div[data-role='footer']").css({'position': 'relative'});
+		});
+		$(document).on('blur', 'input, textarea', function() {
+			$.mobile.activePage.find("div[data-role='footer']").css({'position': 'fixed'});
+		});
+				
+		
+		loadScript("phonegap-websocket.js",function(){ //websockets
+			createClient(); //para texto
+			resize_text_websockets('talog'); //Para redimencionar textarea que recebe os textos	
+		});
+		
+				
+		initPushwoosh(); //Função de push
+		
+		app.receivedEvent('deviceready');
+
+	},
+	onOffline: function() { 
+		alert("OFFLINE - uma conexão é necessária!");
+		navigator.app.exitApp();
+	},
+	// Update DOM on a Received Event
+	receivedEvent: function(id) { 
+	}
+};
+
+//INICIALIZA FUNÇÕES
+app.initialize(); 
+
+		
+</script>
+<script id="panel-init">
+	$(function() {
+		$( "body>[data-role='panel']" ).panel();
+	});
+</script>
+</head> 
+<body> 
+<!-- Pagina CHATTEXT -->
+<div data-role="page" id="chat_text" data-title="CHAT TEXTUAL" data-theme="c">
+	<div data-role="header">
+		
+        <a href="#" class="bt_to_menu" data-role="button" data-icon="bullets" data-iconpos="left"> menu </a>
+        <h2></h2> 
+		<a href="#" class="bt_to_online" data-role="button" data-icon="user" data-iconpos="right"> online </a> 
+    
+    </div>
+    
+	<div data-role="content">
+    <img src="images/mundo.gif" style="width:9%;" alt=""/>
+	<textarea id="taLog" readonly></textarea>
+    <div class="div_play"></div>  
+	</div><!-- content -->
+ 
+    <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+    <span id="footer_chat">
+    <input type="text" id="txtMessage" />
+    <a href="#" id="btnSendMessage" onclick="send();" style="width:10%; float:left; margin-top:2px;">
+    <img src="images/msg.png" style="height:40px;" alt=""/>
+    </a>
+    </span>
+    </div><!-- footer -->
+    
+</div><!-- Pagina CHATTEXT -->
+
+<!-- painel_lateral esquerdo -->  
+<div data-role="panel" id="painel_lateral" data-position="left" data-display="push" data-theme="c">
+		<p><a href="index.html#page_init" data-transition="slide" rel="external" data-transition="slide"  data-rel="page" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-home">início</a></p>
+        <p><a href="index.html#treine" rel="external" data-transition="slide"  data-rel="page"  data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-star">treine</a></p>
+        <p><a href="index.html#chat_sound_page" rel="external" data-transition="slide"  data-rel="page" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-user">chat musical</a></p>
+        <p><a href="#" id="bt_to_chat_text" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-user">chat textual</a></p>
+		<p><a href="index.html#info" rel="external" data-transition="slide" data-rel="page" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-info">info</a></p>
+        <p><a href="#" id="exit_app" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-power">
+        sair
+        </a></p>
+    <div style="text-align:center;">	
+    <img src="images/logo.png" alt="" style="width:70%;"/>
+    </div> 
+</div><!-- painel_lateral esquerdo --> 
+
+<!-- painel_lateral direito -->  
+<div data-role="panel" id="painel_lateral_direito" data-position="right" data-display="push" data-theme="c">
+    
+    <p style="font-size:11px; text-align:center;">
+    <img src="images/mundo.gif" style="width:30px;" alt=""/><br><br>
+    <span style="text-align:left">
+    <strong>Usuários online: <span id="user_on_vivo"></span></strong><br><br>
+    <strong>Streaming: <small id="textposition">stopped</small></strong><br><br>
+    <strong>Total de participantes: <span id="total_streaming_vivo"></span></strong><br><br>
+    </span>
+    </p>
+    
+</div><!-- painel_lateral direito --> 
+
+</body>
+</html>
