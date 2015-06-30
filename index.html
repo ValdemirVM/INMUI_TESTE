@@ -60,6 +60,19 @@ $(document).bind("mobileinit", function() {
 	background-size: 100%; 
 	z-index: -1; 
 }
+.div_andro_back{
+	position: fixed; 
+	top: 0; 
+	left: 0; 
+	width: 100% !important; 
+	height: 100% !important; 
+	background: url(images/ui_back.png) no-repeat center center fixed !important; 
+	-webkit-background-size: 80%; 
+	-moz-background-size: 80%; 
+	-o-background-size: 80%; 
+	background-size: 80%; 
+	z-index: -1; 
+}
 .ui-page{ 
 	background:none;
 	padding:0;
@@ -68,15 +81,18 @@ $(document).bind("mobileinit", function() {
     background-color:transparent !important; /*#690003*/ 
 	border:hidden;   
 }
-#footer_init .ui-input-text{
+#div_pass_inmui .ui-input-text{
     width: 80% !important;
 	margin:4px 4px 4px 7px !important;
 	float:left;
 }
-#footer_chat .ui-input-text{
-    width: 80% !important;
-	margin:4px 4px 4px 7px !important;
+#div_send_chat .ui-input-text{
+    width: 60% !important;
+	height: 8% !important;
+	margin:0 !important;
 	float:left;
+	font-size:12px;
+	margin-bottom:14px;
 }
 
 /*
@@ -140,15 +156,18 @@ $(document).bind("mobileinit", function() {
 	});
 </script>
 
+
+
 </head> 
-<body> 
+<body onselectstart="return false"> 
 <div data-role="page" id="page_init" data-title="INMUI" data-theme="a">
 	
 	<div data-role="header">
     
-		<a href="#" class="bt_to_menu" data-role="button" data-icon="bullets" data-iconpos="left"> menu </a>
-        <h2></h2> 
-		<a href="#" class="bt_to_vivo" data-role="button" data-icon="cloud" data-iconpos="right"> ao vivo </a>
+		<a href="#" style="display:none;" class="bt_to_menu" data-role="button" data-icon="bullets" data-iconpos="left"> menu </a>
+        <h2>
+        </h2> 
+		<a href="#" style="display:none;" class="bt_to_vivo" data-role="button" data-icon="cloud" data-iconpos="right"> ao vivo </a>
     
 	</div><!-- header -->
     
@@ -161,26 +180,26 @@ $(document).bind("mobileinit", function() {
     
     <!-- footer -->
 	<div data-role="footer" class="nav-mobilyzer" data-position="fixed" data-tap-toggle="false" data-theme="b">
-    <span id="footer_init">
-    <input type="text" id="login_inmui" value="Digite um apelido."/>
-    <a href="#" id="btn_login_inmui" style="width:10%; float:left; margin-top:2px;">
-    <img src="images/security.png" style="height:40px;" alt=""/>
-    </a></span>
-    
+   <span id="div_pass_inmui">
+        <input type="text" id="login_inmui" value="Digite um apelido."/>
+        <a href="#" id="bt_key_pass" style="width:10%; float:left; margin-top:2px;">
+        <img src="images/security.png" style="height:40px;" alt=""/>
+        </a>
+	</span>
 	</div><!-- footer -->
 
 	<!-- msg_inicial -->
 	<div data-role="popup" id="popup_msg" data-overlay-theme="a" data-theme="a" data-dismissible="true">
-		<div role="main" class="ui-content">
+		<div role="main" class="ui-content" style="text-align:center;">
             <p id="msg_init_inmui"></p> 
-            <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">START INMUI</a>
+            <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">CONTINUE</a>
 		</div>
     </div><!-- msg_inicial -->
     
 </div><!-- Pagina 1 -->
 
 <!-- Pagina SHOW AO VIVO -->
-<div data-role="page" id="show" data-title="SHOW" data-theme="c">
+<div data-role="page" id="show" data-title="SHOW" data-theme="b">
 	
 	<div data-role="header">
     
@@ -189,8 +208,9 @@ $(document).bind("mobileinit", function() {
 		  <a href="#" id="playbutton" onClick="html5audio.play();return false;"><img src="images/playbutton.png" /></a>
 		  <a href="#" id="activityindicator" onClick="html5audio.stop();return false;"><img src="images/activityindicator.gif" /></a>
 		  <a href="#" id="stopbutton" onClick="html5audio.stop();return false;"><img src="images/stopbutton.png" /></a>
+         <small style="font-size:8px; float:right;" id="textposition">stopped</small>
 		</h1>
-        <!-- <small id="textposition">stopped</small> -->
+        
         <a href="#" class="bt_to_online" data-role="button" data-icon="user" data-iconpos="right"> online </a>  
 	</div><!-- header -->
      
@@ -220,19 +240,16 @@ $(document).bind("mobileinit", function() {
     
     </div><!-- content -->
     
-    <!-- footer -->
-	<div data-role="footer">
-	</div><!-- footer -->
     
 </div><!-- Pagina SHOW AO VIVO -->
 
 
 <!-- Pagina TREINE -->
-<div data-role="page" id="treine" data-title="TREINE" data-theme="c">
+<div data-role="page" id="treine" data-title="TREINE" data-theme="b">
 	<div data-role="header">
     
 	<a href="#" class="bt_to_menu" data-role="button" data-icon="bullets" data-iconpos="left"> menu </a>
-        <h2 style="font-size:11px; color:#E1E1E1; padding-top:14px;">off-line</h2> 
+        <h2 style="font-size:18px; color:#FC9602; padding-top:18px;">&laquo; OFF &raquo;</h2> 
 	<a href="#" id="bt_to_player" data-role="button" data-icon="audio" data-iconpos="right"> play music </a> 
     
     </div>
@@ -250,39 +267,47 @@ $(document).bind("mobileinit", function() {
 		<div class="bts_sounds" id="la_off" ontouchstart="app.play('la', 'la_off');" ontouchend="app.touchEnd(event);">LA</div>
 		<div class="bts_sounds" id="lasu_off" ontouchstart="app.play('lasu', 'lasu_off');" ontouchend="app.touchEnd(event);">LA#</div>
 		<div class="bts_sounds" id="si_off" ontouchstart="app.play('si', 'si_off');" ontouchend="app.touchEnd(event);">SI</div>
-    <div class="div_play"></div>
+    <div class="div_andro_back"></div>
 	</div><!-- content -->
  
-    
+    <!-- popup_treine -->
+	<div data-role="popup" id="popup_treine" data-overlay-theme="a" data-theme="a" data-dismissible="true">
+		<div role="main" class="ui-content">
+            <p id="msg_init_inmui"></p> 
+            <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">CONTINUE</a>
+		</div>
+    </div><!-- popup_treine -->
 
 </div><!-- Pagina TREINE -->
 
 <!-- Pagina CHATTEXT MUSICAL -->
-<div data-role="page" id="chat_sound_page" data-title="CHAT TEXTUAL" data-theme="c">
+<div data-role="page" id="chat_sound_page" data-title="CHAT TEXTUAL" data-theme="b">
 	<div data-role="header">
 		
         <a href="#" class="bt_to_menu" data-role="button" data-icon="bullets" data-iconpos="left"> menu </a>
-        <h2></h2> 
-		<a href="#" class="bt_to_online" data-role="button" data-icon="user" data-iconpos="right"> online </a> 
-    
+        <h1><img src="images/mundo.gif" style="width:20%;" alt=""/></h1>
+		<a href="#" class="bt_to_online" data-role="button" data-icon="user" data-iconpos="right"> online </a>
+
     </div>
     
-	<div data-role="content">
-    <img src="images/mundo.gif" style="width:9%;" alt=""/>
-	<textarea id="taLog" readonly></textarea>
+	<div data-role="content" style="text-align:center;">
+    
+    	<span id="div_send_chat">
+        <input type="text" id="txtMessage" value="Programação INMUI ao vivo!" data-theme="a"/>
+        <a href="#" id="btnSendMessage" onclick="send();" style="width:10%; float:left; margin-left:3px;">
+        <img src="images/msg.png" style="height:32px;" alt=""/>
+        </a>
+        </span><br>
+	<textarea data-theme="a" id="taLog" readonly></textarea>
     <div class="div_play"></div>  
 	</div><!-- content -->
- 
-    <div data-role="footer" data-position="fixed" data-tap-toggle="false">
-    <span id="footer_chat">
-    <input type="text" id="txtMessage" />
-    <a href="#" id="btnSendMessage" onclick="send();" style="width:10%; float:left; margin-top:2px;">
-    <img src="images/msg.png" style="height:40px;" alt=""/>
-    </a>
-    </span>
-    </div><!-- footer -->
-    
 
+	<div data-role="footer" data-position="fixed" data-tap-toggle="false">
+    <h1>
+         <small style="font-size:18px; text-align:center;" id="textposition2">stopped</small>
+	</h1>
+    </div>
+    
 </div><!-- Pagina CHATTEXT -->
 
 <!-- Pagina INFO -->
@@ -308,9 +333,9 @@ $(document).bind("mobileinit", function() {
 <!-- painel_lateral esquerdo -->  
 <div data-role="panel" id="painel_lateral" data-position="left" data-display="push" data-theme="c">
 		<p><a href="#" data-theme="b" id="bt_to_home" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-home">início</a></p>
+        <p><a href="#" id="bt_to_vivo" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-audio">play inmui</a></p>
+        <p><a href="#" id="bt_to_chat_musical" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-cloud">show inmui - chat</a></p>
         <p><a href="#" id="bt_to_treine" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-star">treine</a></p>
-        <p><a href="#" id="bt_to_chat_musical" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-user">chat musical</a></p>
-        <p><a href="chat_inmui.html" rel="external" data-transition="slide"  data-rel="page" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-user">chat textual</a></p>
 		<p><a href="#" id="bt_to_info" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-info">info</a></p>
         <p><a href="#" id="exit_app" data-role="button" data-iconpos="notext" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-power">
         sair
@@ -323,12 +348,10 @@ $(document).bind("mobileinit", function() {
 <!-- painel_lateral direito -->  
 <div data-role="panel" id="painel_lateral_direito" data-position="right" data-display="push" data-theme="c">
     
-    <p style="font-size:11px; text-align:center;">
+    <p style="font-size:13px; text-align:center; color:#FB9605;">
     <img src="images/mundo.gif" style="width:30px;" alt=""/><br><br>
     <span style="text-align:left">
-    <strong>Usuários online: <span id="user_on_vivo"></span></strong><br><br>
-    <strong>Streaming: <small id="textposition">stopped</small></strong><br><br>
-    <strong>Total de participantes: <span id="total_streaming_vivo"></span></strong><br><br>
+    <strong style="color:#FFFFFF;">ONLINE: <br><span id="user_on_vivo"></span></strong><br><br>
     </span>
     </p>
     
@@ -342,7 +365,7 @@ $(document).bind("mobileinit", function() {
               <a href="#" onclick="document.getElementById('demo').pause()" ><img src="images/36/pause.png" alt=""/></a>&nbsp;&nbsp;&nbsp;
               <a href="#" onclick="document.getElementById('demo').pause(); document.getElementById('demo').currentTime = 0.0; stopMusicMp3();" ><img src="images/36/stop.png" alt=""/></a>
               <br>
-              <span style="color:#EAF002;" id="audio_status_play_mp3"></span><br><span style="font-size:10px;" id="audio_position_play_mp3"></span><br><br>
+              <span style="color:#EAF002;" id="audio_status_play_mp3"></span><br><span style="font-size:12px;" id="audio_position_play_mp3"></span><br><br>
 			  <span id="img_status_play_mp3"></span>
        
 </div><!-- painel_lateral TREINE -->
@@ -365,13 +388,16 @@ $(document).bind("mobileinit", function() {
 		var timeStreamingMp3 = 0;
 		function timeMusicMp3(tempo_atual){ 
             timeStreamingMp3 = tempo_atual + 1;
-            document.getElementById('audio_position_play_mp3').innerHTML = 'Time music: '+timeStreamingMp3;
+            document.getElementById('audio_position_play_mp3').innerHTML = 'Time Streaming: '+timeStreamingMp3;
 		}
 		//STREAMING DO RADIO 
 		playButton = document.getElementById('playbutton');
 		stopButton = document.getElementById('stopbutton');
 		activityIndicator = document.getElementById('activityindicator');
 		textPosition = document.getElementById('textposition');
+		
+		//STREAMING DO RADIO 
+		textPosition2 = document.getElementById('textposition2');
 </script>
 
 </body>

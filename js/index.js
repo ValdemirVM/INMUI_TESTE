@@ -40,15 +40,7 @@ function carregar_bts(){//Função para carregar botões
 		$( "#painel_lateral" ).panel( "open");
 	});
 	
-	$( ".bt_to_online" ).on( "tap", function( event ) { //Bt do show para useruarios online
-		$( "#painel_lateral_direito" ).panel( "open");
-	});
-	
-	$( "#bt_to_player" ).on( "tap", function( event ) { //Bt do treine para o Player
-		$( "#painel_lateral_treine" ).panel( "open");
-	});	
-	
-	$( ".bt_to_vivo" ).on( "tap", function( event ) {  //Bt da home show ao vivo
+	$( ".bt_to_vivo" ).on( "tap", function( event ) {  //Bt da home para play ao vivo
 		$.mobile.pageContainer.pagecontainer('change', '#show', {
 				transition: 'flip', //Transição
 				changeHash: true, //entrada de histórico do navegador para usar o bt voltar (hash #)
@@ -59,12 +51,28 @@ function carregar_bts(){//Função para carregar botões
 				showLoadMsg: true //Mensagem de loading
 		});
 	});
-			
+	
+	$( "#bt_to_vivo" ).on( "tap", function( event ) {  //Bt da menu para play ao vivo
+		if($.mobile.activePage[0].id== "show"){
+			$( "#painel_lateral" ).panel( "close" );
+		}else{
+			$.mobile.pageContainer.pagecontainer('change', '#show', { role: 'page', transition: 'slide' });
+		}
+	});
+	
 	$( "#bt_to_home" ).on( "tap", function( event ) {  //Bt do menu lateral para home
 		if($.mobile.activePage[0].id== "page_init"){
 			$( "#painel_lateral" ).panel( "close" );
 		}else{
 			$.mobile.pageContainer.pagecontainer('change', '#page_init', { role: 'page', transition: 'slide' });
+		}
+	});
+	
+	$( "#bt_to_chat_musical" ).on( "tap", function( event ) {  //Bt do menu lateral para CHATTEXT MUSICAL
+		if($.mobile.activePage[0].id== "chat_sound_page"){
+			$( "#painel_lateral" ).panel( "close" );
+		}else{
+			$.mobile.pageContainer.pagecontainer('change', '#chat_sound_page', { role: 'page', transition: 'slide' });
 		}
 	});
 	
@@ -75,23 +83,6 @@ function carregar_bts(){//Função para carregar botões
 			$.mobile.pageContainer.pagecontainer('change', '#treine', { role: 'page', transition: 'slide' });
 		}
 	});
-		
-	$( "#bt_to_player" ).on( "tap", function( event ) { //Bt do show para useruarios online
-		$( "#painel_lateral_treine" ).panel( "open");
-	});
-	
-	$( "#bt_to_chat_text" ).on( "tap", function( event ) {  //Bt do menu lateral para home
-			$.mobile.pageContainer.pagecontainer('change', 'chat_inmui.html', { role: 'page', transition: 'slide', reload: true, showLoadMsg: true });
-
-	});
-	  
-	$( "#bt_to_chat_musical" ).on( "tap", function( event ) {  //Bt do menu lateral para CHATTEXT MUSICAL
-		if($.mobile.activePage[0].id== "chat_sound_page"){
-			$( "#painel_lateral" ).panel( "close" );
-		}else{
-			$.mobile.pageContainer.pagecontainer('change', '#chat_sound_page', { role: 'page', transition: 'slide' });
-		}
-	});
 	
 	$( "#bt_to_info" ).on( "tap", function( event ) {  //Bt do menu lateral para CHATTEXT
 		if($.mobile.activePage[0].id== "info"){
@@ -100,6 +91,19 @@ function carregar_bts(){//Função para carregar botões
 			$.mobile.pageContainer.pagecontainer('change', '#info', { role: 'page', transition: 'slide' });
 		}
 	});
+	
+	$( ".bt_to_online" ).on( "tap", function( event ) { //Bt do show para useruarios online
+		$( "#painel_lateral_direito" ).panel( "open");
+	});
+	
+	$( "#bt_to_player" ).on( "tap", function( event ) { //Bt do show para useruarios online
+		$( "#painel_lateral_treine" ).panel( "open");
+	});
+		
+	//$( "#bt_to_chat_text" ).on( "tap", function( event ) {  //Bt do menu lateral para home
+			//$.mobile.pageContainer.pagecontainer('change', 'chat_inmui.html', { role: 'page', transition: 'slide', reload: true, showLoadMsg: true });
+	//});
+	  
 	$( "#exit_app" ).on( "tap", function( event ) {  //Bt do menu lateral para SAIR
 		
 			navigator.notification.confirm(
@@ -113,6 +117,18 @@ function carregar_bts(){//Função para carregar botões
 	});//Bt do menu lateral para SAIR
 	
 }//Fim de função carregar_bts
+
+//GERAR STRING RANDOMICA
+function randomString(tamanho){
+	var randomstr = "";
+	var alpha = new Array("1","2","3","4","5","6","7","8","9","0","a","b","c","d","e","f","g","h",
+"i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z");
+	for (var i=0; i < tamanho; i++){
+		var randomnumber=Math.floor(Math.random()*36);
+		randomstr += alpha[randomnumber];
+	}
+		return randomstr;
+}
 
 /***** FUNÇÃO PARA TOOGLE DE VALOR DE INPUT TEXT  *****/
 jQuery.fn.inputtoggle = function(){
@@ -128,6 +144,32 @@ jQuery.fn.inputtoggle = function(){
 		});
 	});    
 };
+
+function ajax_inmui(id_input, url_envio){
+		var theName = $.trim($(id_input).val());
+ 
+		if(theName.length > 0){
+                $.ajax({
+                  type: "GET",
+                  url: url_envio, //"http://www.inmui.hol.es/callajax.php"
+                  data: ({name: theName}),
+                  cache: false,
+                  dataType: "text",
+                  success: onSuccess
+                });
+            }
+   
+ 
+		$("#resultLog").ajaxError(function(event, request, settings, exception) {
+			$("#resultLog").html("Error Calling: " + settings.url + "<br />HTTP Code: " + request.status);
+        });
+ 
+		function onSuccess(data){
+			//$("#resultLog").html("Result: " + data);
+			alert("Result: " + data);
+		}
+ 
+}
 
 //Verifica se ja existe login
 function verifica_key(){
@@ -194,21 +236,6 @@ function login_inmui(){
 	
 	}//login vazio
 }
-//Função de inicialização do app para verificar o login para bloquear app
-function seguranca_init(){
-	
-	var key= verifica_key();
-	
-	if(key == 0 || key == ''){ //Se não existe key
-		$('.bt_to_menu').hide(); //Desabilita link do app 
-		$('.bt_to_vivo').hide(); 
-		$('.footer_init_inmui').show(); //Footer de login
-	}else{
-		$('.bt_to_menu').show(); //Desabilita link do app 
-		$('.bt_to_vivo').show();
-		$('.footer_init_inmui').hide(); //Footer de login
-	}
-}
 
 //Check o tipo de conexão
 function checkConnection() {
@@ -237,7 +264,7 @@ function showLoading_Mobile(){
 			html: ""
 		});
 }
-function hideLoading_Mobile(){
+function hideLoading_Mobile(){ 
 		$.mobile.loading('hide');
 }
 
@@ -383,6 +410,9 @@ function initPushwoosh() {
 	}
 }
 
+var apelido= ""; //Apelido do usuario atual
+var str_random = randomString(9);
+
 var app = {
     // Application Constructor
     initialize: function() {
@@ -402,43 +432,113 @@ var app = {
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() { //Insira aqui todas as funções p inicializar
 	
-		//seguranca_init(); //Inicializa o login - Para vizualizar no browser deixe comentado esta função
+		//Mensagens na inicialização
+		var msg_init_inmui = ['A terra pede socorro, ajude-a.', 'Salve sua casa, salve o planeta.', 'Ame a sua vida, cuide de seu planeta.', 'A poluição nos mata, nos entristece, nos envelhece.', 'Seja feliz, mantenha limpa as ruas e os rios.', 'Sorria para a esperança de um planeta saudável.', 'Tenha coragem e denuncie os crimes ambientais.', 'Os animais são seres vivos e merecem respeito.', 'Menos carros; mais ar para a vida.', 'Respeite a você mesmo, respeite a natureza.', 'Lembre-se, estamos todos em um só planeta.', 'Todos querem o perfume das flores, mas poucos sujam suas mãos para cultivá-las. <br>(Augusto Cury)', 'Ambiente limpo não é o que mais se limpa e sim o que menos se suja. <br>(Chico Xavier) ', 'A natureza pode suprir todas as necessidades do homem, menos a sua ganância. <br>(Mahatma Gandhi) ', 'A sabedoria da natureza é tal que não produz nada de supérfluo ou inútil. <br>(Nicolau Copérnico) ', 'É triste pensar que a natureza fala e que o gênero humano não a ouve. <br>(Victor Hugo) ', 'A natureza é o único livro que oferece um conteúdo valioso em todas as suas folhas. <br>(Johann Wolfgang von Goethe) ', 'Se soubesse que o mundo se acaba amanhã, eu ainda hoje plantaria uma árvore. <br>(Martin Luther King Jr.) ', 'Digo que minha música vem da natureza, agora mais do que nunca. Amo as árvores, as pedras, os passarinhos. <br>(Tom Jobim) ', 'Nunca o homem inventará nada mais simples nem mais belo do que uma manifestação da natureza. <br>(Leonardo da Vinci) ', 'A terra é insultada e oferece suas flores como resposta. <br>(Rabindranath Tagore) ', 'O animal selvagem e cruel não é aquele que está atrás das grades. É o que está na frente delas. <br>(Axel Munthe) ', 'Só se pode vencer a natureza obedecendo-lhe. <br>(Francis Bacon) ', 'Eu adoraria pintar do jeito que o pássaro canta. <br>(Claude Monet) ', 'Podes cortar todas as flores mas não podes impedir a Primavera de aparecer. <br>(Pablo Neruda)', 'O coração do homem, quando longe da natureza, endurece. <br>(Povo Indígena Lakota) ', 'Às vezes ouço passar o vento; e só de ouvir o vento passar, vale a pena ter nascido. <br>(Fernando Pessoa) ', 'A Floresta Amazônica não pode, ela própria, entrar na Justiça contra os desmatadores. Nós é que temos de fazer isso. <br>(Marina Silva) ', 'O nível da poluição ambiental no planeta é igualada a burrice dos homens. <br>(Edy Gahr) ', 'A responsabilidade social e a preservação ambiental significa um compromisso com a vida. <br>(João Bosco da Silva) ', 'É tão humano escrever sobre conscientização ambiental. Díficil é sustentar essa idéia quando uma pessoa joga o lixo na rua. <br>(Dani Leão) ', 'Quem ama preserva. Preservar o meio ambiente é preservar a VIDA. <br>(Andrea Taiyoo) ', 'Recicle o lixo,feche a torneira quando estiver escovando os dentes... somente você e eu poderemos salvar o mundo. <br>(Andrea Taiyoo) ', 'Preservar o Meio Ambiente é uma lição de todos, futuras gerações agradecem esta idéia. <br>(Carlos Alberto da Silveira) ', 'Preservai a atmosfera do planeta: - chuva não se fabrica!  <br>(AJCMusskoff)'];
+		
+		//Inicialização do app para verificar o login para bloquear app
+		var key= "";
+				$('.bt_to_menu').hide(); //Desabilita link do app 
+				$('.bt_to_vivo').hide(); 
+				$('#div_pass_inmui').show(); //login
+				
+		$( "#bt_key_pass" ).on( "tap", function( event ) {  //Bt login
+			showLoading_Mobile();
+		
+			var text_key = $.trim($("#login_inmui").val());//Key login
+			
+			if(text_key.length < 2 || text_key == 'Digite um apelido.'){ //login vazio
+				alert('Escreva um apelido com 2 ou mais caracteres!');
+			}else{
+				
+				apelido = str_random + '_' + text_key; //Apelido do usuario atual
+ 
+				$.ajax({
+						  type: "POST",
+						  url: "http://www.inmui.hol.es/login.php",
+						  data: ({name: apelido}),
+						  cache: false,
+						  dataType: "text",
+						  crossDomain: true,
+						  success: onSuccess,
+						  error: function(xhr, status, error) {// handle error	
+						  	alert("ERRO! TENTE NOVAMENTE!");
+						  }
+				});
+		 
+				function onSuccess(data){
+					//alert(data);
+					$('.bt_to_menu').show(); //Aparece botões
+					$('.bt_to_vivo').show();
+					$('#div_pass_inmui').hide(); //Desaparece login
+					hideLoading_Mobile();
+					alert(data);
+					tualiza_users();
+					
+					var intervalo = window.setInterval(atualiza_users, 600000);//Ajax conectado - 1000 = 1 seg (Atualiza em 10 min = 600000)
+				}
+				
+				function atualiza_users(){
+						
+						$.ajax({
+							  type: "POST",
+							  url: "http://www.inmui.hol.es/refresh_login.php",
+							  data: ({name: apelido}),
+							  cache: false,
+							  dataType: "text",
+							  crossDomain: true,
+							  success: onSuccessRefresh,
+							  error: function(xhr, status, error) {// handle error
+							  	alert("ERRO! TENTE NOVAMENTE!");
+							  }
+						});
+						
+						function onSuccessRefresh(data){
+							$('#user_on_vivo').html('<span>' + data + '</span>');
+							alert(data);
+						}	
+				}
+				
+			}
+		});//Login
+	
 	
 		$("#login_inmui").inputtoggle(); //Toogle input
+		$("#txtMessage").inputtoggle(); //Toogle input
 		
 		carregar_bts(); //Carregar botões
 		
-		//Posição do footer ao exibir teclado
-		$(document).on('focus', 'input, textarea', function() {
-			$.mobile.activePage.find("div[data-role='footer']").css({'position': 'relative'});
-		});
-		$(document).on('blur', 'input, textarea', function() {
-			$.mobile.activePage.find("div[data-role='footer']").css({'position': 'fixed'});
-		});
-		
         //onDeviceReady_rec_audio(); //PLAYER AUDIO
+		
+		$(document).on("pagecontainerhide", function () {
+			if($.mobile.activePage[0].id== "page_init"){ 
+				alert("Saindo?");
+			}
+		});
 				
 		$(document).on("pagecontainershow", function (e, ui) {//Ações em determinada pagina 
 		
-		
-			
-			//Mensagens na inicialização
-		msg_init_inmui = ['A terra pede socorro, ajude-a.', 'Salve sua casa, salve o planeta.', 'Ame a sua vida, cuide de seu planeta.', 'A poluição nos mata, nos entristece, nos envelhece.', 'Seja feliz, mantenha limpa as ruas e os rios.', 'Sorria para a esperança de um planeta saudável.', 'Tenha coragem e denuncie os crimes ambientais.', 'Os animais são seres vivos e merecem respeito.', 'Menos carros; mais ar para a vida.', 'Respeite a você mesmo, respeite a natureza.', 'Lembre-se, estamos todos em um só planeta.', 'Todos querem o perfume das flores, mas poucos sujam suas mãos para cultivá-las. <br>(Augusto Cury)', 'Ambiente limpo não é o que mais se limpa e sim o que menos se suja. <br>(Chico Xavier) ', 'A natureza pode suprir todas as necessidades do homem, menos a sua ganância. <br>(Mahatma Gandhi) ', 'A sabedoria da natureza é tal que não produz nada de supérfluo ou inútil. <br>(Nicolau Copérnico) ', 'É triste pensar que a natureza fala e que o gênero humano não a ouve. <br>(Victor Hugo) ', 'A natureza é o único livro que oferece um conteúdo valioso em todas as suas folhas. <br>(Johann Wolfgang von Goethe) ', 'Se soubesse que o mundo se acaba amanhã, eu ainda hoje plantaria uma árvore. <br>(Martin Luther King Jr.) ', 'Digo que minha música vem da natureza, agora mais do que nunca. Amo as árvores, as pedras, os passarinhos. <br>(Tom Jobim) ', 'Nunca o homem inventará nada mais simples nem mais belo do que uma manifestação da natureza. <br>(Leonardo da Vinci) ', 'A terra é insultada e oferece suas flores como resposta. <br>(Rabindranath Tagore) ', 'O animal selvagem e cruel não é aquele que está atrás das grades. É o que está na frente delas. <br>(Axel Munthe) ', 'Só se pode vencer a natureza obedecendo-lhe. <br>(Francis Bacon) ', 'Eu adoraria pintar do jeito que o pássaro canta. <br>(Claude Monet) ', 'Podes cortar todas as flores mas não podes impedir a Primavera de aparecer. <br>(Pablo Neruda)', 'O coração do homem, quando longe da natureza, endurece. <br>(Povo Indígena Lakota) ', 'Às vezes ouço passar o vento; e só de ouvir o vento passar, vale a pena ter nascido. <br>(Fernando Pessoa) ', 'A Floresta Amazônica não pode, ela própria, entrar na Justiça contra os desmatadores. Nós é que temos de fazer isso. <br>(Marina Silva) ', 'O nível da poluição ambiental no planeta é igualada a burrice dos homens. <br>(Edy Gahr) ', 'A responsabilidade social e a preservação ambiental significa um compromisso com a vida. <br>(João Bosco da Silva) ', 'É tão humano escrever sobre conscientização ambiental. Díficil é sustentar essa idéia quando uma pessoa joga o lixo na rua. <br>(Dani Leão) ', 'Quem ama preserva. Preservar o meio ambiente é preservar a VIDA. <br>(Andrea Taiyoo) ', 'Recicle o lixo,feche a torneira quando estiver escovando os dentes... somente você e eu poderemos salvar o mundo. <br>(Andrea Taiyoo) ', 'Preservar o Meio Ambiente é uma lição de todos, futuras gerações agradecem esta idéia. <br>(Carlos Alberto da Silveira) ', 'Preservai a atmosfera do planeta: - chuva não se fabrica!  <br>(AJCMusskoff)'];
-		show_msg_init = msg_init_inmui[Math.floor(Math.random() * msg_init_inmui.length)];
-		document.getElementById("msg_init_inmui").innerHTML = "<h3>" + show_msg_init +"</h3>";
-		
+			show_msg_init = msg_init_inmui[Math.floor(Math.random() * msg_init_inmui.length)]; //Mensagem popup tela inicial
+			document.getElementById("msg_init_inmui").innerHTML = "<h3>" + show_msg_init +"</h3>";
 			if($.mobile.activePage[0].id== "page_init"){ 
 				$('#popup_msg').popup('open', {
-						transition: 'pop'
+						transition: 'slide'
 				});
 			}
 			
-			if($.mobile.activePage[0].id== "show"){ 
+			if($.mobile.activePage[0].id== "show"){  //Radio
+				html5audio.play(); //Play streaming
+			}
+			if($.mobile.activePage[0].id== "chat_sound_page"){ 
 				html5audio.play(); //Play streaming
 			}
 			if($.mobile.activePage[0].id!= "show"){ 
 				html5audio.stop(); //Stop streaming
 			}
+			if($.mobile.activePage[0].id!= "chat_sound_page"){ 
+				html5audio.stop(); //Stop streaming
+			}
+			
+			
 			
 			
 		});
