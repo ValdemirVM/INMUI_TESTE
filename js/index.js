@@ -41,7 +41,7 @@ function carregar_bts(){//Função para carregar botões
 	});
 	
 	$( ".bt_to_vivo" ).on( "tap", function( event ) {  //Bt da home para play ao vivo
-		$.mobile.pageContainer.pagecontainer('change', '#show', {
+		$.mobile.pageContainer.pagecontainer('change', '#chat_sound_page', {
 				transition: 'flip', //Transição
 				changeHash: true, //entrada de histórico do navegador para usar o bt voltar (hash #)
 				reverse: false, //Transição em sentido inverso
@@ -320,10 +320,10 @@ function resize_text_websockets (id) {
         }
 
         // Sends a message
-        function send() {
-            var message = document.getElementById('txtMessage').value;
-            //Log("Message sent to channel: " + channel + ": " + message);
-            ortcClient.send(channel, message);
+        function send(nota) {
+            //var message = document.getElementById('txtMessage').value;
+			ortcClient.send(channel, nota);
+            Log("Mensagem enviada: " + channel + ": " + message);
         };		
 		
 		
@@ -331,6 +331,7 @@ function resize_text_websockets (id) {
         // Displays a message received
         var onMessage = function (client, channel, message) {
             //Log('Message received from channel ' + channel + ': ' + message);
+			window.plugins.NativeAudio.play('sounds/' + message + '.mp3', function(msg){console.info(msg), document.getElementById(message).classList.remove('touched');}, function(msg){ console.error( 'Error: ' + msg ); });
 			Log(channel + ' : ' + message);
 			resize_text_websockets('talog');            			
         };
@@ -471,8 +472,8 @@ var app = {
 					$('.bt_to_vivo').show();
 					$('#div_pass_inmui').hide(); //Desaparece login
 					hideLoading_Mobile();
-					alert(data);
-					tualiza_users();
+					alert('CONECTADO COM SUCESSO!');
+					atualiza_users();
 					
 					var intervalo = window.setInterval(atualiza_users, 600000);//Ajax conectado - 1000 = 1 seg (Atualiza em 10 min = 600000)
 				}
@@ -493,8 +494,7 @@ var app = {
 						});
 						
 						function onSuccessRefresh(data){
-							$('#user_on_vivo').html('<span>' + data + '</span>');
-							alert(data);
+							$('#user_on_vivo').html('<span style="text-align:left;">' + data + '</span>');
 						}	
 				}
 				
@@ -509,11 +509,11 @@ var app = {
 		
         //onDeviceReady_rec_audio(); //PLAYER AUDIO
 		
-		$(document).on("pagecontainerhide", function () {
-			if($.mobile.activePage[0].id== "page_init"){ 
-				alert("Saindo?");
-			}
-		});
+		//$(document).on("pagecontainerhide", function () {
+			//if($.mobile.activePage[0].id== "page_init"){ 
+				//alert("Saindo?");
+			//}
+		//});
 				
 		$(document).on("pagecontainershow", function (e, ui) {//Ações em determinada pagina 
 		
@@ -592,6 +592,11 @@ var app = {
     
 	},	
 	play: function(bts_sounds, id) {
+        document.getElementById(id).classList.add('touched');
+		send(bts_sounds);
+        //window.plugins.NativeAudio.play('sounds/' + bts_sounds + '.mp3', function(msg){console.info(msg), document.getElementById(bts_sounds).classList.remove('touched');}, function(msg){ console.error( 'Error: ' + msg ); });
+	},
+	play_test: function(bts_sounds, id) {
         document.getElementById(id).classList.add('touched');
         window.plugins.NativeAudio.play('sounds/' + bts_sounds + '.mp3', function(msg){console.info(msg), document.getElementById(bts_sounds).classList.remove('touched');}, function(msg){ console.error( 'Error: ' + msg ); });
 	},
